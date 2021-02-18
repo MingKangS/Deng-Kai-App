@@ -7,6 +7,7 @@ import awsconfig from './aws-exports';
 import 'crypto-js/lib-typedarrays';
 import UserMain from './nav/routes/userMain'
 import AdminMain from './nav/routes/adminMain'
+import InitializingScreen from './nav/screens/initializing'
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -32,7 +33,10 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    this.checkAuth()
+    setTimeout(() => {
+      this.checkAuth()
+    }, 2000);
+    
   }
 
   updateAuth = (currentView) => {
@@ -55,7 +59,7 @@ class App extends React.Component {
     console.log('currentView: ', currentView)
     return (
       <>
-        { currentView === 'initializing' && <Auth updateAuth={this.updateAuth} />}
+        { currentView === 'initializing' && <InitializingScreen/>}
         { currentView === 'auth' && <Auth updateAuth={this.updateAuth} />}
         { currentView === 'userNav' && <UserMain screenProps={{
                     handler: (settings) => { this.updateAuth(settings) }

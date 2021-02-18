@@ -14,7 +14,7 @@ import * as queries from '../../graphql/queries';
 import * as mutations from '../../graphql/mutations';
 import * as subscriptions from '../../graphql/subscriptions';
 import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
-
+import LoadingData from './loadingData';
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
 
@@ -50,6 +50,7 @@ class App extends Component {
     test: [],
     client: "",
     dateTime: "",
+    loadingData: true,
   }
  
 
@@ -69,7 +70,8 @@ class App extends Component {
       console.log(test, test.data.listWeighingScales.items, typeof test.data.listWeighingScales.items)
       const t = test.data.listWeighingScales.items
       t.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
-      this.setState({ test: t });
+      this.setState({ test: t, loadingData: false });
+      console.log(this.state.loadingData)
     } catch (err) {
       console.log('error: ', err);
     }
@@ -104,14 +106,26 @@ class App extends Component {
 
   render() {
     return ( 
+      <View>
+        {
+          this.state.loadingData && (
+            <LoadingData/>
+          )
+        }
+        {
+          !this.state.loadingData && (
+            <View>
+              <Text>Data</Text>
+              <Text>{this.state.test.map(test => <Text>{test.Weight} <Text>{test.dateTime}{"\n"}</Text></Text>)}</Text>
+              <TextInput onChangeText={(text) => this.setState({Weight: text})}></TextInput>
+              <TextInput onChangeText={(text) => this.setState({dateTime: text})}></TextInput>
+              <Button title="Press Me">change</Button>
+            </View>
+          )
+        }
+      </View>
       
-          <View>
-            <Text>Data</Text>
-            <Text>{this.state.test.map(test => <Text>{test.Weight} <Text>{test.dateTime}{"\n"}</Text></Text>)}</Text>
-            <TextInput onChangeText={(text) => this.setState({Weight: text})}></TextInput>
-            <TextInput onChangeText={(text) => this.setState({dateTime: text})}></TextInput>
-            <Button title="Press Me">change</Button>
-          </View>
+          
         
       
       

@@ -6,6 +6,8 @@ import Header from '../shared/header';
 // import HomeScreen from "../src/screens/home";
 import AccountScreen from "../screens/Account";
 import Nav from '../screens/home';
+import About from '../screens/about';
+
 
 const RootDrawerNavigator = createDrawerNavigator({
     Home: {
@@ -23,6 +25,14 @@ const RootDrawerNavigator = createDrawerNavigator({
       defaultNavigationOptions: ({ navigation }) => {
         return {
           headerTitle: () => <Header title='GameZone' navigation={navigation} />
+        }
+      },
+    },
+    About: {
+      screen: About,
+      defaultNavigationOptions: ({ navigation }) => {
+        return {
+          title: () => {<Header title='abt' navigation={navigation} />}
         }
       },
     }

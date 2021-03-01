@@ -8,7 +8,7 @@ import 'crypto-js/lib-typedarrays';
 import UserMain from './nav/routes/userMain'
 import AdminMain from './nav/routes/adminMain'
 import InitializingScreen from './nav/screens/initializing'
-
+//test
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
   region: awsconfig.aws_appsync_region,
@@ -36,7 +36,7 @@ class App extends React.Component {
     setTimeout(() => {
       this.checkAuth()
     }, 2000);
-    
+    console.log("test")
   }
 
   updateAuth = (currentView) => {

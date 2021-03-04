@@ -7,7 +7,7 @@ const InitializingScreen = () => {
 
   return (
     <View>
-      
+      <Text>testing</Text>
     </View>
   )
 }

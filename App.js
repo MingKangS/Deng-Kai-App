@@ -8,7 +8,7 @@ import 'crypto-js/lib-typedarrays';
 import UserMain from './nav/routes/userMain'
 import AdminMain from './nav/routes/adminMain'
 import InitializingScreen from './nav/screens/initializing'
-//test
+//test2
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
   region: awsconfig.aws_appsync_region,

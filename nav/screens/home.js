@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {Component} from 'react';
-import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image} from 'react-native';
 import config from '../../aws-exports';
 import { withAuthenticator, Authenticator, SignIn, SignUp, ConfirmSignUp, Greetings  } from 'aws-amplify-react-native';
 import ListEvents from '../../graphql/ListEvents';
@@ -17,6 +17,8 @@ import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify
 import LoadingData from './loadingData';
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
+import Card from '../shared/card';
+import DateTimePicker from "react-native-modal-datetime-picker";
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -33,14 +35,14 @@ Amplify.configure({
   }
 })
 
-const client = new AWSAppSyncClient({
+/*const client = new AWSAppSyncClient({
   url: awsconfig.aws_appsync_graphqlEndpoint,
   region: awsconfig.aws_appsync_region,
   auth: {
     type: AUTH_TYPE.API_KEY,
     apiKey: awsconfig.aws_appsync_apiKey,
   },
-});
+});*/
 
 
 
@@ -51,6 +53,34 @@ class App extends Component {
     client: "",
     dateTime: "",
     loadingData: true,
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDateTimePickerVisible: false
+    };
+    this.state = {
+      lastRefresh: Date(Date.now()).toString(),
+    }
+    this.refreshScreen = this.refreshScreen.bind(this)
+  }
+ 
+  showDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: true });
+  };
+ 
+  hideDateTimePicker = () => {
+    this.setState({ isDateTimePickerVisible: false });
+  };
+ 
+  handleDatePicked = date => {
+    console.log("A date has been picked: ", date);
+    this.hideDateTimePicker();
+  };
+
+  refreshScreen() {
+    this.setState({ lastRefresh: Date(Date.now()).toString() })
   }
  
 
@@ -76,7 +106,7 @@ class App extends Component {
       console.log('error: ', err);
     }
   }
-/*
+
   async mutateDb() {
     console.log(12345)
     const cli = this.state.client
@@ -94,7 +124,7 @@ class App extends Component {
     } catch(err) {
       console.log(err)
     }
-  }*/
+  }
     
     
     
@@ -114,25 +144,58 @@ class App extends Component {
         }
         {
           !this.state.loadingData && (
-            <View>
+            /*<View>
               <Text>Data</Text>
               <Text>{this.state.test.map(test => <Text>{test.Weight} <Text>{test.dateTime}{"\n"}</Text></Text>)}</Text>
               <TextInput onChangeText={(text) => this.setState({Weight: text})}></TextInput>
               <TextInput onChangeText={(text) => this.setState({dateTime: text})}></TextInput>
               <Button title="Press Me">change</Button>
+            </View>*/
+
+            <View>
+              <Text></Text><Text></Text>
+              <Button title="Select a date here" onPress={this.showDateTimePicker} />
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+              />
+              <TouchableOpacity onPress={this.refreshScreen}>
+                <Image 
+                    source={require ('../src/assets/refresh.png')}
+                    resizeMode='contain'
+                    style={{width: 50, height: 50, alignSelf: "flex-end"}}
+                  />
+              </TouchableOpacity>
+              <Text>Last Refresh: {this.state.lastRefresh}</Text>
+              <Card>
+                <Text style={styles.headerText}>Weight Sensing</Text>
+                <Text>data</Text>
+                <Text>data</Text>
+                <Text>data</Text>
+              </Card>
+              <Card>
+                <Text style={styles.headerText}>Image Processing</Text>
+                <Text>data</Text>
+                <Text>data</Text>
+                <Text>data</Text>
+              </Card>
             </View>
           )
         }
       </View>
-      
-          
-        
-      
-      
+
     );
   }
 }
 
-
+const styles = StyleSheet.create({
+  headerText: {
+    fontWeight: 'bold',
+    fontSize: 20,
+    color: '#333',
+    letterSpacing: 1,
+  },
+});
 
 export default App;

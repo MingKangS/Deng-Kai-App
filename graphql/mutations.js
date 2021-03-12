@@ -25,3 +25,12 @@ export const deleteMkTable = /* GraphQL */ `
     }
   }
 `;
+export const createUser = /* GraphQL */ `
+  mutation MyMutation($input: CreateUserCInput!) {
+    createUserC(input: $input) {
+      Username
+      Email
+      Password
+    }
+  }
+`;

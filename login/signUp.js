@@ -1,8 +1,26 @@
 import React, { Fragment, Component } from 'react'
 import { View, StyleSheet } from 'react-native'
-
+import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
 import { Input, ActionButton } from './components/Index'
 import { Auth } from 'aws-amplify'
+import awsconfig from '../../aws-exports';
+import * as mutations from './../graphql/mutations';
+import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
+
+Amplify.configure({
+  url: awsconfig.aws_appsync_graphqlEndpoint,
+  region: awsconfig.aws_appsync_region,
+  Auth: {
+    type: AUTH_TYPE.API_KEY,
+    apiKey: awsconfig.aws_appsync_apiKey,
+  },
+  API:{
+    "aws_appsync_graphqlEndpoint": awsconfig.aws_appsync_graphqlEndpoint,
+    "aws_appsync_region": awsconfig.aws_appsync_region,
+    "aws_appsync_authenticationType": AUTH_TYPE.API_KEY,
+    "aws_appsync_apiKey": awsconfig.aws_appsync_apiKey,
+  }
+})
 
 class SignIn extends Component {
   state = {
@@ -27,15 +45,42 @@ class SignIn extends Component {
     } catch (err) {
       console.log('error signing up...', err)
     }
+    try {
+      const newUser = {
+        Email: this.state.email,
+        Username: this.state.username,
+        Password: this.state.password,
+      };
+      //const newTodo = await API.graphql({ mutation: mutations.createMkTable, variables: {input: todoDetails}, authMode: 'API_KEY',});
+      const createUser = await API.graphql({ query: mutations.createUser, variables: {input: newUser}});  
+    } catch(err) {
+      console.log(err)
+    }
+    
+    
+    
   }
   confirmSignUp = async () => {
-    const { username, authCode } = this.state
+    const { username, email, password, authCode } = this.state
     try {
       await Auth.confirmSignUp(username, authCode)
       this.setState({ stage: 0 })
     } catch (err) {
       console.log('error signing up...', err)
+      return
     }
+    try {
+      const newUser = {
+        Email: email,
+        Username: username,
+        Password: password,
+      };
+      //const newTodo = await API.graphql({ mutation: mutations.createMkTable, variables: {input: todoDetails}, authMode: 'API_KEY',});
+      const createUser = await API.graphql({ query: mutations.createUser, variables: {input: newUser}});  
+    } catch(err) {
+      console.log(err)
+    }
+    console.log("Account created!")
   }
   render() {
     return (

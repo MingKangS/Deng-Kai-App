@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { createDrawerNavigator } from "react-navigation-drawer"
 import { createAppContainer } from "react-navigation"
-
+import adminStack from './adminStack';
 import Header from '../shared/header';
 // import HomeScreen from "../src/screens/home";
 import AccountScreen from "../screens/Account";
@@ -28,10 +28,8 @@ const RootDrawerNavigator = createDrawerNavigator({
         }
       },
     },
-    Create_User: {
-      screen: screenProps => <Sign screenProps={value => {
-        screenProps.screenProps.handler(value)
-    }} />,
+    Users: {
+      screen: adminStack,
       defaultNavigationOptions: ({ navigation }) => {
         return {
           headerTitle: () => <Header title='Create User' navigation={navigation} />

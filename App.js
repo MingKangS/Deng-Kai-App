@@ -47,7 +47,7 @@ class App extends React.Component {
     try {
       await AmplifyAuth.currentAuthenticatedUser()
       console.log('user is signed in')
-      this.setState({ currentView: 'userNav' })
+      this.setState({ currentView: 'adminNav' })
     } catch (err) {
       console.log('user is not signed in')
       this.setState({ currentView: 'auth' })

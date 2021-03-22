@@ -48,21 +48,24 @@ Amplify.configure({
 
  
 class App extends Component {
-  state = {
-    test: [],
-    client: "",
-    dateTime: "",
-    loadingData: true,
-  }
-
   constructor(props) {
     super(props);
     this.state = {
-      isDateTimePickerVisible: false
-    };
-    this.state = {
+      isDateTimePickerVisible: false,
       lastRefresh: Date(Date.now()).toString(),
-    }
+      date: Date(Date.now()).toString(),
+      weight: "",
+      count: "",
+      defect: "",
+      test: [], // x
+      client: "", // x
+      dateTime: "", // x
+      loadingData: true,
+      dataMap: {},
+    };
+    this.showDateTimePicker = this.showDateTimePicker.bind(this)
+    this.hideDateTimePicker = this.hideDateTimePicker.bind(this)
+    this.handleDatePicked = this.handleDatePicked.bind(this)
     this.refreshScreen = this.refreshScreen.bind(this)
   }
  
@@ -82,29 +85,51 @@ class App extends Component {
   refreshScreen() {
     this.setState({ lastRefresh: Date(Date.now()).toString() })
   }
+
+  convertDateFormat(date) {
+    console.log(date, typeof date)
+    //date = Date(date)
+    const month = (date.getMonth()+1).toString() > 9 ? (date.getMonth()+1).toString() : "0" + (date.getMonth()+1).toString()
+    const day = date.getDate().toString() > 9 ? date.getDate().toString() : "0" + date.getDate().toString()
+    return date.getFullYear().toString() + "-" + month + "-" + day
+  }
  
 
   async componentDidMount() {
+    var d = new Date()
+    const dateToday = this.convertDateFormat(d)
+    this.setState({ date: dateToday })
+
     let user = await AmplifyAuth.currentAuthenticatedUser();
     console.log(user)
-    console.log(1234)
+    console.log(this.state.date)
     try {
-      const test = await API.graphql({ 
-        query: queries.listWeighingScales,
+      const weightData = await API.graphql({ 
+        query: queries.listWeights,
         authMode: 'API_KEY',
       });
       // console.log('Scales:',test,typeof test, typeof test.data, typeof test.data.listMkTables.items);
       // const test = await API.graphql(graphqlOperation(ListScales));
       // console.log('Scales: ', test);
-      console.log(test)
-      console.log(test, test.data.listWeighingScales.items, typeof test.data.listWeighingScales.items)
-      const t = test.data.listWeighingScales.items
-      t.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
-      this.setState({ test: t, loadingData: false });
-      console.log(this.state.loadingData)
+      console.log(weightData)
+      console.log(weightData, weightData.data.listWeightData.items)
+      const weightDataList = weightData.data.listWeightData.items
+      //t.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
+      //this.setState({ test: t, loadingData: false });
+      var weightMap = {}
+      for (var weight of weightDataList) {
+        //console.log(weight, weight.dateTime, weightMap)
+        weightMap[weight.dateTime.slice(0,10)] = weight.Weight
+      }
+      this.setState({ dataMap: weightMap })
+      console.log(weightMap)
+      //console.log(this.state.loadingData)
     } catch (err) {
       console.log('error: ', err);
     }
+    this.setState({ loadingData: false });
+    const w = this.state.dataMap[this.state.date]
+    this.setState({ weight: w });
   }
 
   async mutateDb() {
@@ -170,15 +195,14 @@ class App extends Component {
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>
                 <Text style={styles.headerText}>Weight Sensing</Text>
-                <Text>data</Text>
-                <Text>data</Text>
-                <Text>data</Text>
+                <Text>{this.state.date} {this.state.weight}</Text>
+                
               </Card>
               <Card>
                 <Text style={styles.headerText}>Image Processing</Text>
                 <Text>data</Text>
                 <Text>data</Text>
-                <Text>data</Text>
+                
               </Card>
             </View>
           )

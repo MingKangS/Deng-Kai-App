@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {Component} from 'react';
-import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image} from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
 import config from '../../aws-exports';
 import { withAuthenticator, Authenticator, SignIn, SignUp, ConfirmSignUp, Greetings  } from 'aws-amplify-react-native';
 import ListEvents from '../../graphql/ListEvents';
@@ -35,14 +35,14 @@ Amplify.configure({
   }
 })
 
-/*const client = new AWSAppSyncClient({
+const client = new AWSAppSyncClient({
   url: awsconfig.aws_appsync_graphqlEndpoint,
   region: awsconfig.aws_appsync_region,
   auth: {
     type: AUTH_TYPE.API_KEY,
     apiKey: awsconfig.aws_appsync_apiKey,
   },
-});*/
+});
 
 
 
@@ -54,7 +54,7 @@ class App extends Component {
     dateTime: "",
     loadingData: true,
   }
-
+ 
   constructor(props) {
     super(props);
     this.state = {
@@ -82,7 +82,6 @@ class App extends Component {
   refreshScreen() {
     this.setState({ lastRefresh: Date(Date.now()).toString() })
   }
- 
 
   async componentDidMount() {
     let user = await AmplifyAuth.currentAuthenticatedUser();
@@ -106,7 +105,7 @@ class App extends Component {
       console.log('error: ', err);
     }
   }
-
+/*
   async mutateDb() {
     console.log(12345)
     const cli = this.state.client
@@ -124,7 +123,7 @@ class App extends Component {
     } catch(err) {
       console.log(err)
     }
-  }
+  }*/
     
     
     
@@ -151,22 +150,23 @@ class App extends Component {
               <TextInput onChangeText={(text) => this.setState({dateTime: text})}></TextInput>
               <Button title="Press Me">change</Button>
             </View>*/
-
-            <View>
-              <Text></Text><Text></Text>
-              <Button title="Select a date here" onPress={this.showDateTimePicker} />
-              <DateTimePicker
-                isVisible={this.state.isDateTimePickerVisible}
-                onConfirm={this.handleDatePicked}
-                onCancel={this.hideDateTimePicker}
-              />
-              <TouchableOpacity onPress={this.refreshScreen}>
-                <Image 
-                    source={require ('../src/assets/refresh.png')}
-                    resizeMode='contain'
-                    style={{width: 50, height: 50, alignSelf: "flex-end"}}
-                  />
-              </TouchableOpacity>
+            <View style={styles.container}>
+              <Text style={styles.header}>Home</Text>
+              <View style={{flexDirection: 'row-reverse'}}>
+                <TouchableOpacity onPress={this.refreshScreen}>
+                  <Image 
+                      source={require ('../src/assets/refresh.png')}
+                      resizeMode='contain'
+                      style={{width: 40, height: 40,}}
+                    />
+                </TouchableOpacity>
+                <Button title="Date" onPress={this.showDateTimePicker} />
+                <DateTimePicker
+                  isVisible={this.state.isDateTimePickerVisible}
+                  onConfirm={this.handleDatePicked}
+                  onCancel={this.hideDateTimePicker}
+                />
+              </View>
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>
                 <Text style={styles.headerText}>Weight Sensing</Text>
@@ -184,12 +184,26 @@ class App extends Component {
           )
         }
       </View>
-
+      
+          
+        
+      
+      
     );
   }
 }
 
 const styles = StyleSheet.create({
+  container: {
+    margin: 10
+  },
+  header: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    color: '#333',
+    letterSpacing: 1,
+    marginTop: 20,
+  },
   headerText: {
     fontWeight: 'bold',
     fontSize: 20,

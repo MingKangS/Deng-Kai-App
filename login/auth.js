@@ -28,15 +28,18 @@ class Auth extends React.Component {
         behavior={Platform.Os == "ios" ? "padding" : "height"}
       >
           
-        <Text style={styles.title}>AWS Amplify</Text>
-        <Text style={styles.subtitle}>React Native Auth Starter</Text>
+        <Image 
+          source={require ('./assets/logo.jpg')}
+          resizeMode='contain'
+          style={{width: 250, height: 250,}}
+        />
 
           {
             showForgotPassword ? (
               <>
                 <ForgotPassword toggleAuthType={this.toggleAuthType} />
                 <Text style={styles.bottomMessage}>Already signed up? <Text
-                style={styles.bottomMessageHighlight}
+                style={{color: '#000080'}}
                 onPress={() => this.toggleAuthType('userSignIn')}>&nbsp;&nbsp;Sign In</Text></Text>
               </>
             ) : (

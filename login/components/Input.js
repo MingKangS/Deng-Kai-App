@@ -13,14 +13,14 @@ const Input = ({
     autoCorrect={false}
     onChangeText={v => onChangeText(type, v)}
     secureTextEntry={secureTextEntry}
-    placeholderTextColor='#e2a45b'
-    selectionColor={'#e2a45b'}
+    placeholderTextColor='#000080'
+    selectionColor={'#000080'}
   />
 )
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor: '#fcf3db',
+    backgroundColor: '#e6f3f8',
     borderRadius: 30,
     height: 45,
     width: width - 20,
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 14,
     fontFamily: 'SourceSansPro-Regular',
-    color: '#e2a45b'
+    color: '#000080'
   }
 })
 

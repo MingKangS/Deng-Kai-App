@@ -49,7 +49,7 @@ class SignIn extends Component {
   render() {
     return (
       <View>
-        <Input
+        <Input style={styles.input}
           onChangeText={this.onChangeText}
           type='username'
           placeholder='Username'
@@ -71,13 +71,13 @@ class SignIn extends Component {
               <Text style={styles.bottomMessage}>Not an admin?
                 <Text
                   onPress={() => this.props.toggleAuthType('userSignIn')}
-                  style={styles.bottomMessageHighlight}>&nbsp;&nbsp;Hide admin code.</Text>
+                  style={{color: '#000080'}}>&nbsp;&nbsp;Hide admin code.</Text>
               </Text>
             ) : (
               <Text style={styles.bottomMessage}>Are you an admin?
                 <Text
                   onPress={() => this.props.toggleAuthType('adminSignIn')}
-                  style={styles.bottomMessageHighlight}>&nbsp;&nbsp;Enter admin code.</Text>
+                  style={{color: '#000080'}}>&nbsp;&nbsp;Enter admin code.</Text>
               </Text>
             )
           }
@@ -88,7 +88,7 @@ class SignIn extends Component {
         />
         <View style={styles.buttonContainer}>
           <TouchableHighlight onPress={this.showForgotPassword}>
-            <Text>Forgot your password?</Text>
+            <Text style={{color: '#000080'}}>Forgot your password?</Text>
           </TouchableHighlight>
         </View>
       </View>

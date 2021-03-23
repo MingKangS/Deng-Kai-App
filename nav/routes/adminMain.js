@@ -8,6 +8,8 @@ import AccountScreen from "../screens/Account";
 import Nav from '../screens/home';
 import Sign from '../../login/signUp';
 import About from '../screens/about';
+import { View, Button, StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Image} from 'react-native';
+import {DrawerNavigatorItems} from 'react-navigation-drawer'
 
 const RootDrawerNavigator = createDrawerNavigator({
     Home: {
@@ -44,6 +46,19 @@ const RootDrawerNavigator = createDrawerNavigator({
         }
       },
     }
+},
+{
+  contentComponent:(props) => (
+      <View style={{flex:1}}>
+        <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+          <DrawerNavigatorItems {...props} />
+          <Button title="Logout"/>
+        </SafeAreaView>
+      </View>
+  ),
+  drawerOpenRoute: 'DrawerOpen',
+  drawerCloseRoute: 'DrawerClose',
+  drawerToggleRoute: 'DrawerToggle'
 })
 
 export default createAppContainer(RootDrawerNavigator)

@@ -25,18 +25,13 @@ export const listMkTables = /* GraphQL */ `
   }
 `;
 
-export const listWeighingScales = /* GraphQL */ `
-  query ListWeighingScales(
-    $filter: TableWeighingScaleFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listWeighingScales(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
+export const listWeights = /* GraphQL */ `
+  query listWeights {
+    listWeightData {
+      items { 
         Weight
         dateTime
       }
-      nextToken
     }
   }
 `;

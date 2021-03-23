@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
 import { Input, ActionButton } from './components/Index'
 import { Auth } from 'aws-amplify'
-import awsconfig from '../../aws-exports';
+import awsconfig from '../aws-exports';
 import * as mutations from './../graphql/mutations';
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 

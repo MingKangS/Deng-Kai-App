@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, {Component} from 'react';
-import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image} from 'react-native';
 import config from '../../aws-exports';
 import { withAuthenticator, Authenticator, SignIn, SignUp, ConfirmSignUp, Greetings  } from 'aws-amplify-react-native';
 import ListEvents from '../../graphql/ListEvents';
@@ -35,34 +35,37 @@ Amplify.configure({
   }
 })
 
-const client = new AWSAppSyncClient({
+/*const client = new AWSAppSyncClient({
   url: awsconfig.aws_appsync_graphqlEndpoint,
   region: awsconfig.aws_appsync_region,
   auth: {
     type: AUTH_TYPE.API_KEY,
     apiKey: awsconfig.aws_appsync_apiKey,
   },
-});
+});*/
 
 
 
  
 class App extends Component {
-  state = {
-    test: [],
-    client: "",
-    dateTime: "",
-    loadingData: true,
-  }
- 
   constructor(props) {
     super(props);
     this.state = {
-      isDateTimePickerVisible: false
-    };
-    this.state = {
+      isDateTimePickerVisible: false,
       lastRefresh: Date(Date.now()).toString(),
-    }
+      date: Date(Date.now()).toString(),
+      weight: "",
+      count: "",
+      defect: "",
+      test: [], // x
+      client: "", // x
+      dateTime: "", // x
+      loadingData: true,
+      dataMap: {},
+    };
+    this.showDateTimePicker = this.showDateTimePicker.bind(this)
+    this.hideDateTimePicker = this.hideDateTimePicker.bind(this)
+    this.handleDatePicked = this.handleDatePicked.bind(this)
     this.refreshScreen = this.refreshScreen.bind(this)
   }
  
@@ -83,29 +86,52 @@ class App extends Component {
     this.setState({ lastRefresh: Date(Date.now()).toString() })
   }
 
+  convertDateFormat(date) {
+    console.log(date, typeof date)
+    //date = Date(date)
+    const month = (date.getMonth()+1).toString() > 9 ? (date.getMonth()+1).toString() : "0" + (date.getMonth()+1).toString()
+    const day = date.getDate().toString() > 9 ? date.getDate().toString() : "0" + date.getDate().toString()
+    return date.getFullYear().toString() + "-" + month + "-" + day
+  }
+ 
+
   async componentDidMount() {
+    var d = new Date()
+    const dateToday = this.convertDateFormat(d)
+    this.setState({ date: dateToday })
+
     let user = await AmplifyAuth.currentAuthenticatedUser();
     console.log(user)
-    console.log(1234)
+    console.log(this.state.date)
     try {
-      const test = await API.graphql({ 
-        query: queries.listWeighingScales,
+      const weightData = await API.graphql({ 
+        query: queries.listWeights,
         authMode: 'API_KEY',
       });
       // console.log('Scales:',test,typeof test, typeof test.data, typeof test.data.listMkTables.items);
       // const test = await API.graphql(graphqlOperation(ListScales));
       // console.log('Scales: ', test);
-      console.log(test)
-      console.log(test, test.data.listWeighingScales.items, typeof test.data.listWeighingScales.items)
-      const t = test.data.listWeighingScales.items
-      t.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
-      this.setState({ test: t, loadingData: false });
-      console.log(this.state.loadingData)
+      console.log(weightData)
+      console.log(weightData, weightData.data.listWeightData.items)
+      const weightDataList = weightData.data.listWeightData.items
+      //t.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
+      //this.setState({ test: t, loadingData: false });
+      var weightMap = {}
+      for (var weight of weightDataList) {
+        //console.log(weight, weight.dateTime, weightMap)
+        weightMap[weight.dateTime.slice(0,10)] = weight.Weight
+      }
+      this.setState({ dataMap: weightMap })
+      console.log(weightMap)
+      //console.log(this.state.loadingData)
     } catch (err) {
       console.log('error: ', err);
     }
+    this.setState({ loadingData: false });
+    const w = this.state.dataMap[this.state.date]
+    this.setState({ weight: w });
   }
-/*
+
   async mutateDb() {
     console.log(12345)
     const cli = this.state.client
@@ -123,7 +149,7 @@ class App extends Component {
     } catch(err) {
       console.log(err)
     }
-  }*/
+  }
     
     
     
@@ -150,60 +176,44 @@ class App extends Component {
               <TextInput onChangeText={(text) => this.setState({dateTime: text})}></TextInput>
               <Button title="Press Me">change</Button>
             </View>*/
-            <View style={styles.container}>
-              <Text style={styles.header}>Home</Text>
-              <View style={{flexDirection: 'row-reverse'}}>
-                <TouchableOpacity onPress={this.refreshScreen}>
-                  <Image 
-                      source={require ('../src/assets/refresh.png')}
-                      resizeMode='contain'
-                      style={{width: 40, height: 40,}}
-                    />
-                </TouchableOpacity>
-                <Button title="Date" onPress={this.showDateTimePicker} />
-                <DateTimePicker
-                  isVisible={this.state.isDateTimePickerVisible}
-                  onConfirm={this.handleDatePicked}
-                  onCancel={this.hideDateTimePicker}
-                />
-              </View>
+
+            <View>
+              <Text></Text><Text></Text>
+              <Button title="Select a date here" onPress={this.showDateTimePicker} />
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+              />
+              <TouchableOpacity onPress={this.refreshScreen}>
+                <Image 
+                    source={require ('../src/assets/refresh.png')}
+                    resizeMode='contain'
+                    style={{width: 50, height: 50, alignSelf: "flex-end"}}
+                  />
+              </TouchableOpacity>
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>
                 <Text style={styles.headerText}>Weight Sensing</Text>
-                <Text>data</Text>
-                <Text>data</Text>
-                <Text>data</Text>
+                <Text>{this.state.date} {this.state.weight}</Text>
+                
               </Card>
               <Card>
                 <Text style={styles.headerText}>Image Processing</Text>
                 <Text>data</Text>
                 <Text>data</Text>
-                <Text>data</Text>
+                
               </Card>
             </View>
           )
         }
       </View>
-      
-          
-        
-      
-      
+
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    margin: 10
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    color: '#333',
-    letterSpacing: 1,
-    marginTop: 20,
-  },
   headerText: {
     fontWeight: 'bold',
     fontSize: 20,

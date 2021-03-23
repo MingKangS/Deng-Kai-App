@@ -177,21 +177,23 @@ class App extends Component {
               <Button title="Press Me">change</Button>
             </View>*/
 
-            <View>
-              <Text></Text><Text></Text>
-              <Button title="Select a date here" onPress={this.showDateTimePicker} />
+            <View style={styles.container}>
+              <Text style={styles.header}>Home</Text>
+              <View style={{flexDirection: 'row-reverse'}}>
+                <TouchableOpacity onPress={this.refreshScreen}>
+                  <Image 
+                    source={require ('../src/assets/refresh.png')}
+                    resizeMode='contain'
+                    style={{width: 40, height: 40,}}
+                  />
+              </TouchableOpacity>
+              <Button title="Date" onPress={this.showDateTimePicker} />
               <DateTimePicker
                 isVisible={this.state.isDateTimePickerVisible}
                 onConfirm={this.handleDatePicked}
                 onCancel={this.hideDateTimePicker}
               />
-              <TouchableOpacity onPress={this.refreshScreen}>
-                <Image 
-                    source={require ('../src/assets/refresh.png')}
-                    resizeMode='contain'
-                    style={{width: 50, height: 50, alignSelf: "flex-end"}}
-                  />
-              </TouchableOpacity>
+              </View>
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>
                 <Text style={styles.headerText}>Weight Sensing</Text>
@@ -214,6 +216,16 @@ class App extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    margin: 10
+  },
+  header: {
+    fontWeight: 'bold',
+    fontSize: 24,
+    color: '#333',
+    letterSpacing: 1,
+    marginTop: 20,
+  },
   headerText: {
     fontWeight: 'bold',
     fontSize: 20,

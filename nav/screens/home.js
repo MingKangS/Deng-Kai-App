@@ -178,16 +178,21 @@ class App extends Component {
             </View>*/
 
             <View style={styles.container}>
-              <Text style={styles.header}>Home</Text>
-              <View style={{flexDirection: 'row-reverse'}}>
+              <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
                 <TouchableOpacity onPress={this.refreshScreen}>
                   <Image 
                     source={require ('../src/assets/refresh.png')}
                     resizeMode='contain'
-                    style={{width: 40, height: 40,}}
+                    style={{width: 50, height: 50,}}
                   />
+              </TouchableOpacity >
+              <TouchableOpacity onPress={this.showDateTimePicker}>
+              <Image 
+                  source={require ('../src/assets/calendar.png')}
+                  resizeMode='contain'
+                  style={{width: 35, height: 35,}}
+                />
               </TouchableOpacity>
-              <Button title="Date" onPress={this.showDateTimePicker} />
               <DateTimePicker
                 isVisible={this.state.isDateTimePickerVisible}
                 onConfirm={this.handleDatePicked}
@@ -217,14 +222,7 @@ class App extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10
-  },
-  header: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    color: '#333',
-    letterSpacing: 1,
-    marginTop: 20,
+    margin: 10,
   },
   headerText: {
     fontWeight: 'bold',

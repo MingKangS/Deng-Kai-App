@@ -1,41 +1,37 @@
 import React, {Component} from 'react';
 import { createDrawerNavigator } from "react-navigation-drawer"
 import { createAppContainer } from "react-navigation"
+import { View, Button, StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Image} from 'react-native';
+import {DrawerNavigatorItems} from 'react-navigation-drawer';
 
-import Header from '../shared/header';
 // import HomeScreen from "../src/screens/home";
-import AccountScreen from "../screens/Account";
-import Nav from '../screens/home';
-import About from '../screens/about';
-
+import HomeStack from './homeStack';
+import AboutStack from './aboutStack';
+import AccountStack from './accountStack';
 
 const RootDrawerNavigator = createDrawerNavigator({
     Home: {
-      screen: Nav,
-      defaultNavigationOptions: ({ navigation }) => {
-        return {
-          title: () => {<Header title='LOOOL' navigation={navigation} />}
-        }
+      screen: HomeStack,
       },
-    },
     Account: {
-      screen: screenProps => <AccountScreen screenProps={value => {
-        screenProps.screenProps.handler(value)
-    }} />,
-      defaultNavigationOptions: ({ navigation }) => {
-        return {
-          headerTitle: () => <Header title='GameZone' navigation={navigation} />
-        }
-      },
+      screen: AccountStack,
     },
     About: {
-      screen: About,
-      defaultNavigationOptions: ({ navigation }) => {
-        return {
-          title: () => {<Header title='abt' navigation={navigation} />}
-        }
-      },
-    }
+      screen: AboutStack,
+      }
+},
+{
+  contentComponent:(props) => (
+    <View style={{flex:1}}>
+      <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+        <DrawerNavigatorItems {...props} />
+        <Button title="Logout"/>
+      </SafeAreaView>
+    </View>
+),
+drawerOpenRoute: 'DrawerOpen',
+drawerCloseRoute: 'DrawerClose',
+drawerToggleRoute: 'DrawerToggle'
 })
 
 export default createAppContainer(RootDrawerNavigator)

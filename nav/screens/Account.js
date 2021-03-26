@@ -52,7 +52,6 @@ export default class Account extends Component {
   render() {
     return (
       <View>
-        <Text style={styles.headerText}>Account</Text>
         <View style={styles.container}>
           <Button onPress={() => {this.signOut()}} title="Log out">Sign out</Button>
           <StatusBar style="auto" />
@@ -81,15 +80,7 @@ export default class Account extends Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row-reverse',
-  },
-  headerText: {
-    fontWeight: 'bold',
-    fontSize: 24,
-    color: '#333',
-    letterSpacing: 1,
-    marginTop: 30,
-    marginBottom: 10,
-    marginLeft: 20,
+    margin: 10,
   },
   listItem:{
     margin: 10,
@@ -103,3 +94,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
 });
+

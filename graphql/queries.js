@@ -35,3 +35,13 @@ export const listWeights = /* GraphQL */ `
     }
   }
 `;
+
+export const listUsers = /* GraphQL */ `
+  query listUsers {
+    listUserCS {
+      items { 
+        Username 
+      }
+    }
+  }
+`;

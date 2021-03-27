@@ -3,7 +3,7 @@ import { createDrawerNavigator } from "react-navigation-drawer"
 import { createAppContainer } from "react-navigation"
 import { View, Button, StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Image} from 'react-native';
 import {DrawerNavigatorItems} from 'react-navigation-drawer';
-
+import { Auth } from 'aws-amplify';
 // import HomeScreen from "../src/screens/home";
 import HomeStack from './homeStack';
 import AboutStack from './aboutStack';
@@ -25,7 +25,15 @@ const RootDrawerNavigator = createDrawerNavigator({
     <View style={{flex:1}}>
       <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
         <DrawerNavigatorItems {...props} />
-        <Button title="Logout"/>
+        <Button title="Logout" onPress={async () =>{ 
+          try {
+            await Auth.signOut();
+            props.screenProps.handler("auth")
+          } catch (error) {
+            console.log('error signing out: ', error); 
+          }
+          
+        }} />
       </SafeAreaView>
     </View>
 ),

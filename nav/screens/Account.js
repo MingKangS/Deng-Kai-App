@@ -5,40 +5,7 @@ import React, {Component} from 'react';
 
 export default class Account extends Component {
 
-  state = {
-    data:[
-      {
-        "name": "user1",
-        "machineID": "machine1"
-      },
-      {
-        "name": "user2",
-        "machineID": "machine1"
-      },
-      {
-        "name": "user3",
-        "machineID": "machine1"
-      },
-      {
-        "name": "user4",
-        "machineID": "machine1"
-      },
-      {
-        "name": "user5",
-        "machineID": "machine1"
-      },
-      {
-        "name": "user6",
-        "machineID": "machine1"
-      },
-      {
-        "name": "user7",
-        "machineID": "machine1"
-      },
-    ]
-  }
-
-  async signOut() {
+  /*async signOut() {
     console.log("test acc",this,this.props)
     this.props.screenProps("auth")
     try {
@@ -47,31 +14,13 @@ export default class Account extends Component {
         console.log('error signing out: ', error);
     }
     this.setState({dummy: 1})
-  }
+  } */
 
   render() {
     return (
       <View>
-        <View style={styles.container}>
-          <Button onPress={() => {this.signOut()}} title="Log out">Sign out</Button>
-          <StatusBar style="auto" />
-          <TouchableOpacity >
-            <Image 
-              source={require ('../src/assets/plus.png')}
-              resizeMode='contain'
-              style={{width: 40, height: 40,}}
-            />
-          </TouchableOpacity>
-        </View>
-        <FlatList style={{marginBottom: 120}}
-          data={this.state.data}
-          renderItem={({ item }) => (
-            <TouchableOpacity>
-              <Text style={styles.listItem}>{item.name}</Text>
-            </TouchableOpacity>
-        )}
-        keyExtractor={item => item.name}
-      />
+        <Text style={styles.headerText}>Account</Text>
+        
       </View>
     );
   }

@@ -6,32 +6,51 @@ import { Auth } from 'aws-amplify'
 import { Input, ActionButton } from './components/Index'
 
 class SignIn extends Component {
-  state = {
-    username: '',
-    password: '',
-    adminCode: '',
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: '',
+      adminCode: '',
+    };
+    this.onChangeText = this.onChangeText.bind(this)
+    this.handleSignIn = this.handleSignIn.bind(this)
+    this.signIn = this.signIn.bind(this)
+    this.showForgotPassword = this.showForgotPassword.bind(this)
   }
+  
   onChangeText = (key, value) => {
     this.setState({ [key]: value })
   }
 
-  handleSignIn() {
-    if (this.props.adminSignIn){
-      var adminList = {
+  async handleSignIn() {
+    const adminList = {
         "admin1":true,
         "admin2":true,
         "admin3":true,
         "admin4":true
       };
-      if (adminList[this.state.username] && this.state.adminCode == "dengkaiadmin"){
-        this.signIn
+    if (this.props.adminSignIn){
+      
+      if (adminList[this.state.username]) {
+        if (this.state.adminCode == "dengkaiadmin") {
+          await this.signIn()
+        }
+        
       }
-    } else {
-      this.signIn
+    } else if (!this.props.adminSignIn) {
+      if (!adminList[this.state.username]) {
+        await this.signIn()
+      }
+      
+    }
+    else {
+      
     }
   }
 
-  signIn = async () => {
+  async signIn() {
+    
     const { username, password } = this.state
     console.log(username,password)
     try {
@@ -84,7 +103,7 @@ class SignIn extends Component {
           
         <ActionButton
           title='Sign In'
-          onPress={this.signIn}
+          onPress={this.handleSignIn}
         />
         <View style={styles.buttonContainer}>
           <TouchableHighlight onPress={this.showForgotPassword}>

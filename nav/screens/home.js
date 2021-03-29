@@ -87,8 +87,6 @@ class App extends Component {
   }
 
   convertDateFormat(date) {
-    console.log(date, typeof date)
-    //date = Date(date)
     const month = (date.getMonth()+1).toString() > 9 ? (date.getMonth()+1).toString() : "0" + (date.getMonth()+1).toString()
     const day = date.getDate().toString() > 9 ? date.getDate().toString() : "0" + date.getDate().toString()
     return date.getFullYear().toString() + "-" + month + "-" + day
@@ -133,10 +131,8 @@ class App extends Component {
   }
 
   async mutateDb() {
-    console.log(12345)
     const cli = this.state.client
     const date = this.state.dateTime
-    console.log(cli,date)
     
 
     try {

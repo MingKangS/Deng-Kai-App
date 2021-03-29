@@ -36,7 +36,6 @@ class App extends React.Component {
     setTimeout(() => {
       this.checkAuth()
     }, 2000);
-    console.log("test")
   }
 
   updateAuth = (currentView) => {
@@ -45,9 +44,20 @@ class App extends React.Component {
 
   checkAuth = async () => {
     try {
-      await AmplifyAuth.currentAuthenticatedUser()
+      const user = await AmplifyAuth.currentAuthenticatedUser()
       console.log('user is signed in')
-      this.setState({ currentView: 'adminNav' })
+      const adminList = {
+        "admin1":true,
+        "admin2":true,
+        "admin3":true,
+        "admin4":true
+      };
+      if (adminList[user.username]) {
+        this.setState({ currentView: 'adminNav' })
+      } else {
+        this.setState({ currentView: 'userNav' })
+      }
+      
     } catch (err) {
       console.log('user is not signed in')
       this.setState({ currentView: 'auth' })

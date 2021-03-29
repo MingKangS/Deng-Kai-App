@@ -4,10 +4,8 @@ import { ScrollView, Separator, View, Button, Text, TextInput, Alert, StyleSheet
 import Swipeout from 'react-native-swipeout';
 
 export default class AllEvents extends Component {
-
     constructor(props) {
         super(props);
-        console.log(123123)
         this.state = {
             editing: {}
         }

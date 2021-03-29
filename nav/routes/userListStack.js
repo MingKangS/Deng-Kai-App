@@ -19,10 +19,15 @@ const screens = {
     screen: screenProps => <Sign screenProps={value => {
         screenProps.screenProps.handler(value)
     }} />,
-    
+    navigationOptions: {
+        title: 'Create New User',
+    }
   },  
   Blank_page: {
     screen: Blank,
+    navigationOptions: {
+      title: 'User Blank Page',
+  }
   },
  
 };

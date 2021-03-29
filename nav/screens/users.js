@@ -25,7 +25,21 @@ Amplify.configure({
 class App extends Component {
   state = {
     users:[
-      
+      {
+        email: 'user1@gmail.com',
+        username: 'user1',
+        password: 'abc123'
+      },
+      {
+        email: 'user2@gmail.com',
+        username: 'user2',
+        password: 'abc123'
+      },
+      {
+        email: 'user3@gmail.com',
+        username: "user3",
+        password: 'abc123'
+      },
     ]
   }
 
@@ -62,9 +76,8 @@ class App extends Component {
     return ( 
       <View>
         <View style={styles.container}>
-          <Button onPress={() => {this.navigateCreateUser()}} title="Create new user">Create user</Button>
           <StatusBar style="auto" />
-          <TouchableOpacity >
+          <TouchableOpacity onPress={() => {this.navigateCreateUser()}}>
             <Image 
               source={require ('../src/assets/plus.png')}
               resizeMode='contain'
@@ -72,14 +85,27 @@ class App extends Component {
             />
           </TouchableOpacity>
         </View>
-        <FlatList style={{marginBottom: 120}}
+        <FlatList style={{marginBottom: 60}}
           data={this.state.users}
           renderItem={({ item }) => (
             <TouchableOpacity onPress={() => {this.props.navigation.navigate("Blank_page")}}>
-              <Text style={styles.listItem}>{item.Username}</Text>
+              <View style={styles.user}>
+              <Text>
+                <Text style={styles.title}>Email: </Text>
+                <Text style={styles.content}>{item.email}</Text>
+              </Text>
+              <Text>
+                <Text style={styles.title}>Username: </Text>
+                <Text style={styles.content}>{item.username}</Text>
+              </Text>
+              <Text>
+                <Text style={styles.title}>Password: </Text>
+                <Text style={styles.content}>{item.password}</Text>
+              </Text>
+              </View>
             </TouchableOpacity>
         )}
-        keyExtractor={item => item.Username}
+        keyExtractor={item => item.username}
       />
       </View>
       
@@ -90,6 +116,7 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row-reverse',
+    margin: 5,
   },
   headerText: {
     fontWeight: 'bold',
@@ -100,15 +127,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20,
   },
-  listItem:{
+  user:{
     margin: 10,
     padding: 30,
     backgroundColor: "#F7F7F7",
     width: "80%",
     alignSelf: "center",
-    flexDirection: "row",
+    flexDirection: "column",
     borderRadius: 5,
+  },
+  title:{
     fontWeight: "bold",
+    fontSize: 20,
+  },
+  content:{
     fontSize: 20,
   },
 });

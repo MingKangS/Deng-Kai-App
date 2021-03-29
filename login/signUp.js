@@ -84,9 +84,10 @@ class SignIn extends Component {
   }
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         {
           this.state.stage === Number(0) && (
+            <View style={styles.container}>
             <Fragment>
               <Input
                 placeholder='Username'
@@ -116,6 +117,7 @@ class SignIn extends Component {
                 onPress={this.signUp}
               />
             </Fragment>
+            </View>
           )
         }
         {
@@ -140,6 +142,9 @@ class SignIn extends Component {
 
 const styles = StyleSheet.create({
   container: {
+    justifyContent: 'center',
+    alignSelf: 'center',
+    padding: 20,
   },
   input: {
     backgroundColor: '#fcf3db',

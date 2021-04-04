@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import Header from '../shared/header';
 import Account from '../screens/Account';
+import ChangeCredentials from '../screens/ChangeCredentials';
 import Users from '../screens/users';
 import Sign from '../../login/signUp';
 
@@ -13,6 +14,10 @@ const screens = {
             headerTitle: () => <Header title='Account' navigation={navigation} />
             }
         },
+    },
+    Change_Credentials: {
+        screen: ChangeCredentials,
+    
     },
 };
 

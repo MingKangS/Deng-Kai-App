@@ -34,3 +34,11 @@ export const createUser = /* GraphQL */ `
     }
   }
 `;
+export const deleteUserCS = /* GraphQL */ `
+  mutation deleteUserCS($input: DeleteUserCInput!) {
+    deleteUserC(input: $input) {
+      Username
+      Email
+    }
+  }
+`;

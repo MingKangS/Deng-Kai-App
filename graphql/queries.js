@@ -41,6 +41,7 @@ export const listUsers = /* GraphQL */ `
     listUserCS {
       items { 
         Username 
+        Email
       }
     }
   }

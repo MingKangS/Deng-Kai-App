@@ -181,19 +181,19 @@ class App extends Component {
                     resizeMode='contain'
                     style={{width: 50, height: 50,}}
                   />
-              </TouchableOpacity >
-              <TouchableOpacity onPress={this.showDateTimePicker}>
-              <Image 
-                  source={require ('../src/assets/calendar.png')}
-                  resizeMode='contain'
-                  style={{width: 35, height: 35,}}
+                </TouchableOpacity>
+                <TouchableOpacity onPress={this.showDateTimePicker}>
+                <Image 
+                    source={require ('../src/assets/calendar.png')}
+                    resizeMode='contain'
+                    style={{width: 35, height: 35,}}
+                  />
+                </TouchableOpacity>
+                <DateTimePicker
+                  isVisible={this.state.isDateTimePickerVisible}
+                  onConfirm={this.handleDatePicked}
+                  onCancel={this.hideDateTimePicker}
                 />
-              </TouchableOpacity>
-              <DateTimePicker
-                isVisible={this.state.isDateTimePickerVisible}
-                onConfirm={this.handleDatePicked}
-                onCancel={this.hideDateTimePicker}
-              />
               </View>
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>

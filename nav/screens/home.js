@@ -19,6 +19,7 @@ import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
 import Card from '../shared/card';
 import DateTimePicker from "react-native-modal-datetime-picker";
+import { Chart, Line, Area, HorizontalAxis, VerticalAxis } from 'react-native-responsive-linechart'
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -62,6 +63,8 @@ class App extends Component {
       dateTime: "", // x
       loadingData: true,
       dataMap: {},
+      weightDataList: [],
+      displayedWeightData: [],
     };
     this.showDateTimePicker = this.showDateTimePicker.bind(this)
     this.hideDateTimePicker = this.hideDateTimePicker.bind(this)
@@ -106,53 +109,33 @@ class App extends Component {
         query: queries.listWeights,
         authMode: 'API_KEY',
       });
-      // console.log('Scales:',test,typeof test, typeof test.data, typeof test.data.listMkTables.items);
-      // const test = await API.graphql(graphqlOperation(ListScales));
-      // console.log('Scales: ', test);
-      console.log(weightData)
-      console.log(weightData, weightData.data.listWeightData.items)
+      
       const weightDataList = weightData.data.listWeightData.items
-      //t.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
-      //this.setState({ test: t, loadingData: false });
-      var weightMap = {}
+      
+      weightDataList.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
+      console.log(weightDataList)
+      this.setState({ weightDataList: weightDataList });
+      /* var weightMap = {}
       for (var weight of weightDataList) {
-        //console.log(weight, weight.dateTime, weightMap)
+        
         weightMap[weight.dateTime.slice(0,10)] = weight.Weight
       }
       this.setState({ dataMap: weightMap })
-      console.log(weightMap)
-      //console.log(this.state.loadingData)
+      console.log(weightMap)*/
+      
     } catch (err) {
       console.log('error: ', err);
     }
     this.setState({ loadingData: false });
-    const w = this.state.dataMap[this.state.date]
-    this.setState({ weight: w });
-  }
-
-  async mutateDb() {
-    const cli = this.state.client
-    const date = this.state.dateTime
-    
-
-    try {
-    const todoDetails = {
-      client: cli,
-      dateTime: date,
-    };
-    //const newTodo = await API.graphql({ mutation: mutations.createMkTable, variables: {input: todoDetails}, authMode: 'API_KEY',});
-    const updatedTodo = await API.graphql({ query: mutations.updateMkTable, variables: {input: todoDetails}});  
-    } catch(err) {
-      console.log(err)
-    }
-  }
-    
-    
-    
-  
-
-  onChangeText = (key, val) => {
-    this.setState({ [key]:val });
+    /*const w = this.state.dataMap[this.state.date]
+    this.setState({ weight: w });*/
+    var displayedWeightData = this.state.weightDataList.slice(0,7)
+    displayedWeightData = displayedWeightData.map((data,index) => { 
+      console.log(data,index)
+      return { x:index, y:data.Weight}
+    })
+    console.log(1, displayedWeightData)
+    this.setState({ displayedWeightData: displayedWeightData });
   }
 
   render() {
@@ -165,14 +148,6 @@ class App extends Component {
         }
         {
           !this.state.loadingData && (
-            /*<View>
-              <Text>Data</Text>
-              <Text>{this.state.test.map(test => <Text>{test.Weight} <Text>{test.dateTime}{"\n"}</Text></Text>)}</Text>
-              <TextInput onChangeText={(text) => this.setState({Weight: text})}></TextInput>
-              <TextInput onChangeText={(text) => this.setState({dateTime: text})}></TextInput>
-              <Button title="Press Me">change</Button>
-            </View>*/
-
             <View style={styles.container}>
               <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
                 <TouchableOpacity onPress={this.refreshScreen}>
@@ -198,14 +173,48 @@ class App extends Component {
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>
                 <Text style={styles.headerText}>Weight Sensing</Text>
-                <Text>{this.state.date} {this.state.weight}</Text>
-                
+                {/*<Text>{this.state.date} {this.state.weight}</Text>*/}
+                <Chart
+                  style={{ height: 200, width: 360 }}
+                  data={this.state.displayedWeightData}
+                  padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                  xDomain={{ min: 0, max: 6 }}
+                  yDomain={{ min: -0.5, max: 1.5 }}
+                >
+                  <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
+                  <HorizontalAxis tickCount={5} />
+                  <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
+                  <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
+                </Chart>
               </Card>
               <Card>
                 <Text style={styles.headerText}>Image Processing</Text>
-                <Text>data</Text>
-                <Text>data</Text>
-                
+                <Chart
+                  style={{ height: 200, width: 360 }}
+                  data={[
+                    { x: -2, y: 15 },
+                    { x: -1, y: 10 },
+                    { x: 0, y: 12 },
+                    { x: 1, y: 7 },
+                    { x: 2, y: 6 },
+                    { x: 3, y: 8 },
+                    { x: 4, y: 10 },
+                    { x: 5, y: 8 },
+                    { x: 6, y: 12 },
+                    { x: 7, y: 14 },
+                    { x: 8, y: 12 },
+                    { x: 9, y: 13.5 },
+                    { x: 10, y: 18 },
+                  ]}
+                  padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                  xDomain={{ min: -2, max: 10 }}
+                  yDomain={{ min: 0, max: 20 }}
+                >
+                  <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
+                  <HorizontalAxis tickCount={5} />
+                  <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
+                  <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
+                </Chart>
               </Card>
             </View>
           )

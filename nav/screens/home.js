@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {Component} from 'react';
-import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image} from 'react-native';
+import React, { Component } from 'react';
+import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import config from '../../aws-exports';
 import { withAuthenticator, Authenticator, SignIn, SignUp, ConfirmSignUp, Greetings  } from 'aws-amplify-react-native';
 import ListEvents from '../../graphql/ListEvents';
@@ -19,6 +19,7 @@ import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
 import Card from '../shared/card';
 import DateTimePicker from "react-native-modal-datetime-picker";
+import { Chart, Line, Area, HorizontalAxis, VerticalAxis } from 'react-native-responsive-linechart'
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -173,6 +174,7 @@ class App extends Component {
               <Button title="Press Me">change</Button>
             </View>*/
 
+            <ScrollView>
             <View style={styles.container}>
               <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
                 <TouchableOpacity onPress={this.refreshScreen}>
@@ -181,37 +183,101 @@ class App extends Component {
                     resizeMode='contain'
                     style={{width: 50, height: 50,}}
                   />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.showDateTimePicker}>
-                <Image 
-                    source={require ('../src/assets/calendar.png')}
-                    resizeMode='contain'
-                    style={{width: 35, height: 35,}}
-                  />
-                </TouchableOpacity>
-                <DateTimePicker
-                  isVisible={this.state.isDateTimePickerVisible}
-                  onConfirm={this.handleDatePicked}
-                  onCancel={this.hideDateTimePicker}
+              </TouchableOpacity >
+              <TouchableOpacity onPress={this.showDateTimePicker}>
+              <Image 
+                  source={require ('../src/assets/calendar.png')}
+                  resizeMode='contain'
+                  style={{width: 35, height: 35,}}
                 />
+              </TouchableOpacity>
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+              />
               </View>
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>
                 <Text style={styles.headerText}>Weight Sensing</Text>
-                <Text>{this.state.date} {this.state.weight}</Text>
-                
+                {/*<Text>{this.state.date} {this.state.weight}</Text>*/}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input} 
+                    placeholder='x-axis'
+                    type='x-axis'
+                    placeholderTextColor='#000080'
+                  />
+                  <TextInput 
+                    style={styles.input} 
+                    placeholder='y-axis'
+                    type='y-axis'
+                    placeholderTextColor='#000080'
+                  />
+                  <Button title='Submit'>Submit</Button>
+                </View>
+                <Chart
+                  style={{ height: 200, width: 360 }}
+                  data={[
+                    { x: -2, y: 15 },
+                    { x: -1, y: 10 },
+                    { x: 0, y: 12 },
+                    { x: 1, y: 7 },
+                    { x: 2, y: 6 },
+                    { x: 3, y: 8 },
+                    { x: 4, y: 10 },
+                    { x: 5, y: 8 },
+                    { x: 6, y: 12 },
+                    { x: 7, y: 14 },
+                    { x: 8, y: 12 },
+                    { x: 9, y: 13.5 },
+                    { x: 10, y: 18 },
+                  ]}
+                  padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                  xDomain={{ min: -2, max: 10 }}
+                  yDomain={{ min: 0, max: 20 }}
+                >
+                  <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
+                  <HorizontalAxis tickCount={5} />
+                  <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
+                  <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
+                </Chart>
               </Card>
               <Card>
                 <Text style={styles.headerText}>Image Processing</Text>
-                <Text>data</Text>
-                <Text>data</Text>
-                
+                <Chart
+                  style={{ height: 200, width: 360 }}
+                  data={[
+                    { x: -2, y: 15 },
+                    { x: -1, y: 10 },
+                    { x: 0, y: 12 },
+                    { x: 1, y: 7 },
+                    { x: 2, y: 6 },
+                    { x: 3, y: 8 },
+                    { x: 4, y: 10 },
+                    { x: 5, y: 8 },
+                    { x: 6, y: 12 },
+                    { x: 7, y: 14 },
+                    { x: 8, y: 12 },
+                    { x: 9, y: 13.5 },
+                    { x: 10, y: 18 },
+                  ]}
+                  padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                  xDomain={{ min: -2, max: 10 }}
+                  yDomain={{ min: 0, max: 20 }}
+                >
+                  <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
+                  <HorizontalAxis tickCount={5} />
+                  <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
+                  <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
+                </Chart>
               </Card>
             </View>
+            </ScrollView>
           )
         }
       </View>
-
+      
     );
   }
 }
@@ -226,6 +292,23 @@ const styles = StyleSheet.create({
     color: '#333',
     letterSpacing: 1,
   },
+  inputContainer: {
+    flexDirection: 'row',
+    margin: 10,
+    alignItems: 'center', 
+    justifyContent: 'center',
+  },
+  input: {
+    backgroundColor: '#e6f3f8',
+    borderRadius: 30,
+    height: 45,
+    width: 100,
+    fontSize: 16,
+    paddingHorizontal: 14,
+    fontFamily: 'SourceSansPro-Regular',
+    color: '#000080',
+    marginRight: 10
+  }
 });
 
 export default App;

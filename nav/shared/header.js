@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View} from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+//import { MaterialIcons } from '@expo/vector-icons';
 
 export default function Header({ title, navigation }) {
 
@@ -10,10 +10,15 @@ export default function Header({ title, navigation }) {
 
   return (
     <View style={styles.header}>
-      <MaterialIcons name='menu' size={28} onPress={openMenu} style={styles.icon} />
-      <View>
-        <Text style={styles.headerText}>{title}</Text>
-      </View>
+      {/*<MaterialIcons name='menu' size={28} onPress={openMenu} style={styles.icon} />*/}
+      <TouchableOpacity onPress={openMenu}>
+        <Image 
+          source={require ('../src/assets/menubar.png')}
+          resizeMode='contain'
+          style={{width: 25, height: 25,}}
+        />
+      </TouchableOpacity>
+      <Text style={styles.headerText}>{"\t"}{title}</Text>
     </View>
   );
 }
@@ -23,17 +28,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    
   },
   headerText: {
     fontWeight: 'bold',
     fontSize: 20,
     color: '#333',
     letterSpacing: 1,
+    alignItems: 'center', 
+    justifyContent: 'center',
   },
-  icon: {
-    position: 'absolute',
-    left: 16,
-  }
 }); 

@@ -59,11 +59,23 @@ export default class Account extends Component {
 
   render() {
     return (
-      <View>
-        <Text>{this.state.username}</Text>
-        <Text>{this.state.email}</Text>
-        <Button onPress={() => {this.changeCred("email")}} title='Change email'>Change email</Button>
-        <Button onPress={() => {this.changeCred("password")}} title='Change password'>Change password</Button>
+      <View style={styles.container}>
+        <Text>
+          <Text style={styles.title}>Email: </Text>
+          <Text style={styles.content}>{this.state.email}</Text>
+        </Text>
+        <Text>
+          <Text style={styles.title}>Username: </Text>
+          <Text style={styles.content}>{this.state.username}</Text>
+        </Text>
+        <View style={styles.button}>
+          <View style={styles.button1}>
+          <Button onPress={() => {this.changeCred("email")}} title='Change email'>Change email</Button>
+          </View>
+          <View style={styles.button1}>
+          <Button onPress={() => {this.changeCred("password")}} title='Change password'>Change password</Button>
+          </View>
+        </View>
       </View>
     );
   }
@@ -71,18 +83,33 @@ export default class Account extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row-reverse',
-    margin: 10,
+    flexDirection: 'column',
+    margin: 30,
   },
-  listItem:{
+  button: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    justifyContent: 'center',
+  },
+  button1:{
+    alignItems: 'center', 
+    justifyContent: 'center',
+    margin: 10
+  },
+  user:{
     margin: 10,
     padding: 30,
     backgroundColor: "#F7F7F7",
     width: "80%",
     alignSelf: "center",
-    flexDirection: "row",
+    flexDirection: "column",
     borderRadius: 5,
+  },
+  title:{
     fontWeight: "bold",
+    fontSize: 20,
+  },
+  content:{
     fontSize: 20,
   },
 });

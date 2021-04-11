@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { createStackNavigator } from 'react-navigation-stack';
 import Header from '../shared/header';
 import Account from '../screens/Account';
-import ChangeCredentials from '../screens/ChangeCredentials';
+import ChangeCredentials from '../screens/changeCredentials';
 import Users from '../screens/users';
 import Sign from '../../login/signUp';
 

@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {Component} from 'react';
-import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image} from 'react-native';
+import React, { Component } from 'react';
+import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
 import config from '../../aws-exports';
 import { withAuthenticator, Authenticator, SignIn, SignUp, ConfirmSignUp, Greetings  } from 'aws-amplify-react-native';
 import ListEvents from '../../graphql/ListEvents';
@@ -157,6 +157,7 @@ class App extends Component {
         }
         {
           !this.state.loadingData && (
+            <ScrollView>
             <View style={styles.container}>
               <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
                 <TouchableOpacity onPress={this.refreshScreen}>
@@ -165,24 +166,38 @@ class App extends Component {
                     resizeMode='contain'
                     style={{width: 50, height: 50,}}
                   />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={this.showDateTimePicker}>
-                <Image 
-                    source={require ('../src/assets/calendar.png')}
-                    resizeMode='contain'
-                    style={{width: 35, height: 35,}}
-                  />
-                </TouchableOpacity>
-                <DateTimePicker
-                  isVisible={this.state.isDateTimePickerVisible}
-                  onConfirm={this.handleDatePicked}
-                  onCancel={this.hideDateTimePicker}
+              </TouchableOpacity>
+              <TouchableOpacity onPress={this.showDateTimePicker}>
+              <Image 
+                  source={require ('../src/assets/calendar.png')}
+                  resizeMode='contain'
+                  style={{width: 35, height: 35,}}
                 />
+              </TouchableOpacity>
+              <DateTimePicker
+                isVisible={this.state.isDateTimePickerVisible}
+                onConfirm={this.handleDatePicked}
+                onCancel={this.hideDateTimePicker}
+              />
               </View>
               <Text>Last Refresh: {this.state.lastRefresh}</Text>
               <Card>
                 <Text style={styles.headerText}>Weight Sensing</Text>
-                {/*<Text>{this.state.date} {this.state.weight}</Text>*/}
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input} 
+                    placeholder='x-axis'
+                    type='x-axis'
+                    placeholderTextColor='#000080'
+                  />
+                  <TextInput 
+                    style={styles.input} 
+                    placeholder='y-axis'
+                    type='y-axis'
+                    placeholderTextColor='#000080'
+                  />
+                  <Button title='Submit'>Submit</Button>
+                </View>
                 <Chart
                   style={{ height: 200, width: 360 }}
                   data={this.state.displayedWeightData}
@@ -198,6 +213,21 @@ class App extends Component {
               </Card>
               <Card>
                 <Text style={styles.headerText}>Image Processing</Text>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input} 
+                    placeholder='x-axis'
+                    type='x-axis'
+                    placeholderTextColor='#000080'
+                  />
+                  <TextInput 
+                    style={styles.input} 
+                    placeholder='y-axis'
+                    type='y-axis'
+                    placeholderTextColor='#000080'
+                  />
+                  <Button title='Submit'>Submit</Button>
+                </View>
                 <Chart
                   style={{ height: 200, width: 360 }}
                   data={[
@@ -226,10 +256,11 @@ class App extends Component {
                 </Chart>
               </Card>
             </View>
+            </ScrollView>
           )
         }
       </View>
-
+      
     );
   }
 }
@@ -244,6 +275,23 @@ const styles = StyleSheet.create({
     color: '#333',
     letterSpacing: 1,
   },
+  inputContainer: {
+    flexDirection: 'row',
+    margin: 10,
+    alignItems: 'center', 
+    justifyContent: 'center',
+  },
+  input: {
+    backgroundColor: '#e6f3f8',
+    borderRadius: 30,
+    height: 45,
+    width: 100,
+    fontSize: 16,
+    paddingHorizontal: 14,
+    fontFamily: 'SourceSansPro-Regular',
+    color: '#000080',
+    marginRight: 10
+  }
 });
 
 export default App;

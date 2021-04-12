@@ -51,7 +51,7 @@ class App extends Component {
     }).promise();
 
     try {
-      const user = {Username: this.state.username, Email: this.state.email}
+      const user = {Username: this.state.username}
       const deleteUser = await API.graphql({ query: mutations.deleteUserCS, variables: {input: user}});  
       console.log(deleteUser)
     } catch (err) {

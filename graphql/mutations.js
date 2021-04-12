@@ -30,13 +30,20 @@ export const createUser = /* GraphQL */ `
     createUserC(input: $input) {
       Username
       Email
-      Password
     }
   }
 `;
 export const deleteUserCS = /* GraphQL */ `
   mutation deleteUserCS($input: DeleteUserCInput!) {
     deleteUserC(input: $input) {
+      Username
+      Email
+    }
+  }
+`;
+export const updateUserCS = /* GraphQL */ `
+  mutation updateUserCS($input: UpdateUserCInput!) {
+    updateUserC(input: $input) {
       Username
       Email
     }

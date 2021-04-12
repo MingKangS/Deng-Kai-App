@@ -49,10 +49,10 @@ class SignIn extends Component {
       const newUser = {
         Email: this.state.email,
         Username: this.state.username,
-        Password: this.state.password,
       };
-      //const newTodo = await API.graphql({ mutation: mutations.createMkTable, variables: {input: todoDetails}, authMode: 'API_KEY',});
+      
       const createUser = await API.graphql({ query: mutations.createUser, variables: {input: newUser}});  
+      console.log(createUser)
     } catch(err) {
       console.log(err)
     }

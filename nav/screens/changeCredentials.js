@@ -6,6 +6,7 @@ import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
 import { Input, ActionButton } from './components/Index'
+import * as mutations from '../../graphql/mutations';
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -62,12 +63,22 @@ export default class ChangeCredentials extends Component {
   async save() {
     let user = await Auth.currentAuthenticatedUser();
     const {input, cred, old_password} = this.state
+    const email = input
     if (cred == "email") {
       let result = await Auth.updateUserAttributes(user, {
         "email": input,
       });
-      this.setState({email: input, cred: "confirmation code"},() => this.componentDidMount)
+      await this.setState({email: input, cred: "confirmation code"},this.forceUpdate())
+      console.log(this.state.cred,this.state.email)
       console.log(result);
+
+      const update = {
+        Username: user.username,
+        Email: email,
+      };
+      console.log(update,user,user.username)
+      const newUpdate = await API.graphql({ query: mutations.updateUserCS, variables: {input: update}});
+
     } else {
       console.log(old_password,input)
       Auth.currentAuthenticatedUser()
@@ -113,7 +124,10 @@ export default class ChangeCredentials extends Component {
         />
         { 
             this.state.cred == "confirmation code" ? (
-              <Button onPress={() => this.confirmEmail()} title='Confirm new email'/>
+              <>
+              <Text>We have sent a confirmation code to your email</Text>
+              <Button onPress={() => this.confirmEmail()} title='Enter confirmation code'/>
+              </>
             ) : (
               <Button onPress={() => this.save()} title='Save'/>
             )

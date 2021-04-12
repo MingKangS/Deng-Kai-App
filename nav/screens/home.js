@@ -86,34 +86,33 @@ class App extends Component {
   };
 
   refreshScreen() {
-    this.setState({ lastRefresh: Date(Date.now()).toString() })
+    this.setState({ lastRefresh: Date(Date.now()).toString() });
   }
 
   convertDateFormat(date) {
-    const month = (date.getMonth()+1).toString() > 9 ? (date.getMonth()+1).toString() : "0" + (date.getMonth()+1).toString()
-    const day = date.getDate().toString() > 9 ? date.getDate().toString() : "0" + date.getDate().toString()
-    return date.getFullYear().toString() + "-" + month + "-" + day
+    const month = (date.getMonth()+1).toString() > 9 ? (date.getMonth()+1).toString() : "0" + (date.getMonth()+1).toString();
+    const day = date.getDate().toString() > 9 ? date.getDate().toString() : "0" + date.getDate().toString();
+    return date.getFullYear().toString() + "-" + month + "-" + day;
   }
  
 
   async componentDidMount() {
-    var d = new Date()
-    const dateToday = this.convertDateFormat(d)
-    this.setState({ date: dateToday })
+    var d = new Date();
+    const dateToday = this.convertDateFormat(d);
+    this.setState({ date: dateToday });
 
     let user = await AmplifyAuth.currentAuthenticatedUser();
-    console.log(user)
-    console.log(this.state.date)
+    console.log(user);
     try {
       const weightData = await API.graphql({ 
         query: queries.listWeights,
         authMode: 'API_KEY',
       });
       
-      const weightDataList = weightData.data.listWeightData.items
+      const weightDataList = weightData.data.listWeightData.items;
       
-      weightDataList.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
-      console.log(weightDataList)
+      weightDataList.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0));
+      console.log(weightDataList);
       this.setState({ weightDataList: weightDataList });
       /* var weightMap = {}
       for (var weight of weightDataList) {
@@ -129,12 +128,22 @@ class App extends Component {
     this.setState({ loadingData: false });
     /*const w = this.state.dataMap[this.state.date]
     this.setState({ weight: w });*/
-    var displayedWeightData = this.state.weightDataList.slice(0,7)
+    this.setState({ date: "2021-04-08" });
+    var ind = false;
+    var displayedWeightData = this.state.weightDataList;
+    for (var i = 0; i < displayedWeightData.length; i++) {
+      console.log(displayedWeightData[i].dateTime.slice(0,10), this.state.date, displayedWeightData[i].dateTime.slice(0,10) == this.state.date);
+      if (displayedWeightData[i].dateTime.slice(0,10) == this.state.date) {
+        ind = i+1;
+        break;
+      }
+    }
+    var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-7),ind);
     displayedWeightData = displayedWeightData.map((data,index) => { 
-      console.log(data,index)
-      return { x:index, y:data.Weight}
+      console.log(data,index);
+      return { x:index, y:data.Weight};
     })
-    console.log(1, displayedWeightData)
+    console.log(1, displayedWeightData);
     this.setState({ displayedWeightData: displayedWeightData });
   }
 
@@ -179,7 +188,7 @@ class App extends Component {
                   data={this.state.displayedWeightData}
                   padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
                   xDomain={{ min: 0, max: 6 }}
-                  yDomain={{ min: -0.5, max: 1.5 }}
+                  yDomain={{ min: 0.9, max: 1.0 }}
                 >
                   <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
                   <HorizontalAxis tickCount={5} />

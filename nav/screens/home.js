@@ -1,18 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
 import { Button, StyleSheet, Text, View, TextInput, TouchableOpacity, Image, ScrollView } from 'react-native';
-import config from '../../aws-exports';
-import { withAuthenticator, Authenticator, SignIn, SignUp, ConfirmSignUp, Greetings  } from 'aws-amplify-react-native';
-import ListEvents from '../../graphql/ListEvents';
-import AllEvents from '../../AllEvents'
-import appSyncConfig from '../../aws-exports';
-import { graphql, ApolloProvider } from 'react-apollo';
-import DeleteEvent from '../../graphql/DeleteEvent';
-import {flowRight as compose} from 'lodash';
-import { Rehydrated } from 'aws-appsync-react';
 import * as queries from '../../graphql/queries';
-import * as mutations from '../../graphql/mutations';
-import * as subscriptions from '../../graphql/subscriptions';
 import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
 import LoadingData from './loadingData';
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
@@ -35,18 +23,6 @@ Amplify.configure({
     "aws_appsync_apiKey": awsconfig.aws_appsync_apiKey,
   }
 })
-
-/*const client = new AWSAppSyncClient({
-  url: awsconfig.aws_appsync_graphqlEndpoint,
-  region: awsconfig.aws_appsync_region,
-  auth: {
-    type: AUTH_TYPE.API_KEY,
-    apiKey: awsconfig.aws_appsync_apiKey,
-  },
-});*/
-
-
-
  
 class App extends Component {
   constructor(props) {
@@ -58,18 +34,17 @@ class App extends Component {
       weight: "",
       count: "",
       defect: "",
-      test: [], // x
-      client: "", // x
-      dateTime: "", // x
       loadingData: true,
       dataMap: {},
       weightDataList: [],
       displayedWeightData: [],
+      weightRange: [0,1],
     };
     this.showDateTimePicker = this.showDateTimePicker.bind(this)
     this.hideDateTimePicker = this.hideDateTimePicker.bind(this)
     this.handleDatePicked = this.handleDatePicked.bind(this)
     this.refreshScreen = this.refreshScreen.bind(this)
+    this.getWeightRange = this.getWeightRange.bind(this)
   }
  
   showDateTimePicker = () => {
@@ -86,13 +61,32 @@ class App extends Component {
   };
 
   refreshScreen() {
+    this.setState({ loadingData: true });
     this.setState({ lastRefresh: Date(Date.now()).toString() });
+    this.componentDidMount()
   }
 
   convertDateFormat(date) {
     const month = (date.getMonth()+1).toString() > 9 ? (date.getMonth()+1).toString() : "0" + (date.getMonth()+1).toString();
     const day = date.getDate().toString() > 9 ? date.getDate().toString() : "0" + date.getDate().toString();
     return date.getFullYear().toString() + "-" + month + "-" + day;
+  }
+
+  getWeightRange(data) {
+    //const data = this.state.displayedWeightData
+    var min = Infinity
+    var max = -Infinity
+    console.log(data)
+    for (var i = 0; i < data.length; i++) {
+      console.log(data[i].y,min,max,data[i].y < min,data[i].y > max)
+      if (data[i].y < min) {
+        min = data[i].y
+      }
+      if (data[i].y > max) {
+        max = data[i].y
+      }
+    }
+    return [min,max]
   }
  
 
@@ -125,7 +119,7 @@ class App extends Component {
     } catch (err) {
       console.log('error: ', err);
     }
-    this.setState({ loadingData: false });
+    
     /*const w = this.state.dataMap[this.state.date]
     this.setState({ weight: w });*/
     this.setState({ date: "2021-04-08" });
@@ -144,7 +138,9 @@ class App extends Component {
       return { x:index, y:data.Weight};
     })
     console.log(1, displayedWeightData);
-    this.setState({ displayedWeightData: displayedWeightData });
+    const weightRange = this.getWeightRange(displayedWeightData)
+    console.log(weightRange)
+    this.setState({ displayedWeightData: displayedWeightData, loadingData: false, weightRange: weightRange});
   }
 
   render() {
@@ -158,104 +154,80 @@ class App extends Component {
         {
           !this.state.loadingData && (
             <ScrollView>
-            <View style={styles.container}>
-              <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
-                <TouchableOpacity onPress={this.refreshScreen}>
+              <View style={styles.container}>
+                <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
+                  <TouchableOpacity onPress={this.refreshScreen}>
+                    <Image 
+                      source={require ('../src/assets/refresh.png')}
+                      resizeMode='contain'
+                      style={{width: 50, height: 50,}}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={this.showDateTimePicker}>
                   <Image 
-                    source={require ('../src/assets/refresh.png')}
-                    resizeMode='contain'
-                    style={{width: 50, height: 50,}}
+                      source={require ('../src/assets/calendar.png')}
+                      resizeMode='contain'
+                      style={{width: 35, height: 35,}}
+                    />
+                  </TouchableOpacity>
+                  <DateTimePicker
+                    isVisible={this.state.isDateTimePickerVisible}
+                    onConfirm={this.handleDatePicked}
+                    onCancel={this.hideDateTimePicker}
                   />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={this.showDateTimePicker}>
-              <Image 
-                  source={require ('../src/assets/calendar.png')}
-                  resizeMode='contain'
-                  style={{width: 35, height: 35,}}
-                />
-              </TouchableOpacity>
-              <DateTimePicker
-                isVisible={this.state.isDateTimePickerVisible}
-                onConfirm={this.handleDatePicked}
-                onCancel={this.hideDateTimePicker}
-              />
+                </View>
+                <Text>Last Refresh: {this.state.lastRefresh}</Text>
+                <Card>
+                  <Text style={styles.headerText}>Weight Sensing</Text>
+                  <View style={styles.inputContainer}>
+                    
+                  </View>
+                  <Chart
+                    style={{ height: 200, width: 360 }}
+                    data={this.state.displayedWeightData}
+                    padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                    xDomain={{ min: 0, max: 6 }}
+                    yDomain={{ min: this.state.weightRange[0]-0.01, max: this.state.weightRange[1]+0.01 }}
+                  >
+                    <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
+                    <HorizontalAxis tickCount={5} />
+                    <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
+                    <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
+                  </Chart>
+                </Card>
+                <Card>
+                  <Text style={styles.headerText}>Image Processing</Text>
+                  <View style={styles.inputContainer}>
+                    
+                  </View>
+                  <Chart
+                    style={{ height: 200, width: 360 }}
+                    data={[
+                      { x: -2, y: 15 },
+                      { x: -1, y: 10 },
+                      { x: 0, y: 12 },
+                      { x: 1, y: 7 },
+                      { x: 2, y: 6 },
+                      { x: 3, y: 8 },
+                      { x: 4, y: 10 },
+                      { x: 5, y: 8 },
+                      { x: 6, y: 12 },
+                      { x: 7, y: 14 },
+                      { x: 8, y: 12 },
+                      { x: 9, y: 13.5 },
+                      { x: 10, y: 18 },
+                    ]}
+                    padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                    xDomain={{ min: -2, max: 10 }}
+                    yDomain={{ min: 0, max: 20 }}
+                  >
+                    <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
+                    <HorizontalAxis tickCount={5} />
+                    <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
+                    <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
+                  </Chart>
+                </Card>
               </View>
-              <Text>Last Refresh: {this.state.lastRefresh}</Text>
-              <Card>
-                <Text style={styles.headerText}>Weight Sensing</Text>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    style={styles.input} 
-                    placeholder='x-axis'
-                    type='x-axis'
-                    placeholderTextColor='#000080'
-                  />
-                  <TextInput 
-                    style={styles.input} 
-                    placeholder='y-axis'
-                    type='y-axis'
-                    placeholderTextColor='#000080'
-                  />
-                  <Button title='Submit'>Submit</Button>
-                </View>
-                <Chart
-                  style={{ height: 200, width: 360 }}
-                  data={this.state.displayedWeightData}
-                  padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
-                  xDomain={{ min: 0, max: 6 }}
-                  yDomain={{ min: 0.9, max: 1.0 }}
-                >
-                  <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
-                  <HorizontalAxis tickCount={5} />
-                  <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
-                  <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
-                </Chart>
-              </Card>
-              <Card>
-                <Text style={styles.headerText}>Image Processing</Text>
-                <View style={styles.inputContainer}>
-                  <TextInput
-                    style={styles.input} 
-                    placeholder='x-axis'
-                    type='x-axis'
-                    placeholderTextColor='#000080'
-                  />
-                  <TextInput 
-                    style={styles.input} 
-                    placeholder='y-axis'
-                    type='y-axis'
-                    placeholderTextColor='#000080'
-                  />
-                  <Button title='Submit'>Submit</Button>
-                </View>
-                <Chart
-                  style={{ height: 200, width: 360 }}
-                  data={[
-                    { x: -2, y: 15 },
-                    { x: -1, y: 10 },
-                    { x: 0, y: 12 },
-                    { x: 1, y: 7 },
-                    { x: 2, y: 6 },
-                    { x: 3, y: 8 },
-                    { x: 4, y: 10 },
-                    { x: 5, y: 8 },
-                    { x: 6, y: 12 },
-                    { x: 7, y: 14 },
-                    { x: 8, y: 12 },
-                    { x: 9, y: 13.5 },
-                    { x: 10, y: 18 },
-                  ]}
-                  padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
-                  xDomain={{ min: -2, max: 10 }}
-                  yDomain={{ min: 0, max: 20 }}
-                >
-                  <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
-                  <HorizontalAxis tickCount={5} />
-                  <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
-                  <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
-                </Chart>
-              </Card>
-            </View>
             </ScrollView>
           )
         }

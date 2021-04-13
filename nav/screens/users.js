@@ -72,7 +72,7 @@ class App extends Component {
         <FlatList style={{marginBottom: 60}}
           data={this.state.users}
           renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => {this.props.navigation.navigate("Blank_page")}}>
+            <TouchableOpacity onPress={() => {this.props.navigation.navigate("Blank_page", {username: item.Username, email: item.Email})}}>
               <View style={styles.user}>
                 <Text>
                   <Text style={styles.title}>Username: </Text>

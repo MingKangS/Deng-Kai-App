@@ -46,3 +46,14 @@ export const listUsers = /* GraphQL */ `
     }
   }
 `;
+
+export const listImageProcess = /* GraphQL */ `
+  query listImageProcess {
+    listImageProcess {
+      items { 
+        Count
+        Date
+      }
+    }
+  }
+`;

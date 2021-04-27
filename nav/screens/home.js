@@ -39,6 +39,9 @@ class App extends Component {
       weightDataList: [],
       displayedWeightData: [],
       weightRange: [0,1],
+      imageDataList: [],
+      displayedImagetData: [],
+      imageRange: [0,1],
     };
     this.showDateTimePicker = this.showDateTimePicker.bind(this)
     this.hideDateTimePicker = this.hideDateTimePicker.bind(this)
@@ -108,20 +111,24 @@ class App extends Component {
       weightDataList.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0));
       console.log(weightDataList);
       this.setState({ weightDataList: weightDataList });
-      /* var weightMap = {}
-      for (var weight of weightDataList) {
-        
-        weightMap[weight.dateTime.slice(0,10)] = weight.Weight
-      }
-      this.setState({ dataMap: weightMap })
-      console.log(weightMap)*/
+
+      const imageData = await API.graphql({ 
+        query: queries.listImageProcess,
+        authMode: 'API_KEY',
+      });
+      console.log("____________________",imageData)
+      
+      const imageDataList = imageData.data.listImageProcess.items;
+      
+      imageDataList.sort((a,b) => (a.Date > b.Date) ? 1 : ((b.Date > a.Date) ? -1 : 0));
+      console.log(imageDataList);
+      this.setState({ imageDataList: imageDataList });
+      
       
     } catch (err) {
       console.log('error: ', err);
     }
-    
-    /*const w = this.state.dataMap[this.state.date]
-    this.setState({ weight: w });*/
+
     this.setState({ date: "2021-04-08" });
     var ind = false;
     var displayedWeightData = this.state.weightDataList;
@@ -140,7 +147,26 @@ class App extends Component {
     console.log(1, displayedWeightData);
     const weightRange = this.getWeightRange(displayedWeightData)
     console.log(weightRange)
-    this.setState({ displayedWeightData: displayedWeightData, loadingData: false, weightRange: weightRange});
+    this.setState({ displayedWeightData: displayedWeightData, weightRange: weightRange});
+
+    ind = false;
+    var displayedImageData = this.state.imageDataList;
+    for (var i = 0; i < displayedImageData.length; i++) {
+      //console.log(displayedImageData[i].Date.slice(0,10), this.state.date, displayedWeightData[i].dateTime.slice(0,10) == this.state.date);
+      if (displayedImageData[i].Date.slice(0,10) == "04/15/2021") {
+        ind = i+1;
+        break;
+      }
+    }
+    var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-7),ind);
+    displayedImageData = displayedImageData.map((data,index) => { 
+      console.log(data,index);
+      return { x:index, y:data.Count};
+    })
+    console.log(1, displayedImageData);
+    const imageRange = this.getWeightRange(displayedImageData)
+    console.log(imageRange)
+    this.setState({ displayedImageData: displayedImageData, loadingData: false, imageRange: imageRange});
   }
 
   render() {
@@ -202,24 +228,10 @@ class App extends Component {
                   </View>
                   <Chart
                     style={{ height: 200, width: 360 }}
-                    data={[
-                      { x: -2, y: 15 },
-                      { x: -1, y: 10 },
-                      { x: 0, y: 12 },
-                      { x: 1, y: 7 },
-                      { x: 2, y: 6 },
-                      { x: 3, y: 8 },
-                      { x: 4, y: 10 },
-                      { x: 5, y: 8 },
-                      { x: 6, y: 12 },
-                      { x: 7, y: 14 },
-                      { x: 8, y: 12 },
-                      { x: 9, y: 13.5 },
-                      { x: 10, y: 18 },
-                    ]}
+                    data={this.state.displayedImageData}
                     padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
-                    xDomain={{ min: -2, max: 10 }}
-                    yDomain={{ min: 0, max: 20 }}
+                    xDomain={{ min: 0, max: 6 }}
+                    yDomain={{ min: this.state.imageRange[0]-0.01, max: this.state.imageRange[1]+0.01 }}
                   >
                     <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
                     <HorizontalAxis tickCount={5} />

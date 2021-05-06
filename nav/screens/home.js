@@ -142,7 +142,7 @@ class App extends Component {
     var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-7),ind);
     displayedWeightData = displayedWeightData.map((data,index) => { 
       console.log(data,index);
-      return { x:index, y:data.Weight};
+      return { x:index, y:Math.round(data.Weight/1.5)};
     })
     console.log(1, displayedWeightData);
     const weightRange = this.getWeightRange(displayedWeightData)

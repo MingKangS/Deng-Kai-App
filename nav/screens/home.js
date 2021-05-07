@@ -7,7 +7,7 @@ import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
 import Card from '../shared/card';
 import DateTimePicker from "react-native-modal-datetime-picker";
-import { Chart, Line, Area, HorizontalAxis, VerticalAxis } from 'react-native-responsive-linechart'
+import LineChart from 'react-native-responsive-linechart'
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -208,36 +208,36 @@ class App extends Component {
                   <View style={styles.inputContainer}>
                     
                   </View>
-                  <Chart
-                    style={{ height: 200, width: 360 }}
-                    data={this.state.displayedWeightData}
-                    padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
-                    xDomain={{ min: 0, max: 6 }}
-                    yDomain={{ min: this.state.weightRange[0]-0.01, max: this.state.weightRange[1]+0.01 }}
-                  >
-                    <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
-                    <HorizontalAxis tickCount={5} />
-                    <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
-                    <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
-                  </Chart>
+                  
+                  <LineChart dimensions={{width:20, height:30}} style={{ flex: 1 }}  config={{
+  line: {
+    visible: true,
+    strokeWidth: 1,
+    strokeColor: "#54a0ff"
+  },
+  area: {
+    visible: false
+  },
+  tooltip: {
+    visible: true,
+    labelFontSize: 10
+  },
+  grid: {
+    stepSize: 10000
+  },
+  yAxis: {
+    labelColor: "#54a0ff"
+  },
+  insetY: 10,
+  insetX: 10
+}} data={[1,2,3,4,5,6,7]} xLabels={["qwe","s","asf","qwe","s","asf","l"]}/>
                 </Card>
                 <Card>
                   <Text style={styles.headerText}>Image Processing</Text>
                   <View style={styles.inputContainer}>
                     
                   </View>
-                  <Chart
-                    style={{ height: 200, width: 360 }}
-                    data={this.state.displayedImageData}
-                    padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
-                    xDomain={{ min: 0, max: 6 }}
-                    yDomain={{ min: this.state.imageRange[0]-0.01, max: this.state.imageRange[1]+0.01 }}
-                  >
-                    <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
-                    <HorizontalAxis tickCount={5} />
-                    <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
-                    <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
-                  </Chart>
+                  
                 </Card>
               </View>
             </ScrollView>

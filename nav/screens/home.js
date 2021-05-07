@@ -40,7 +40,7 @@ class App extends Component {
       displayedWeightData: [],
       weightRange: [0,1],
       imageDataList: [],
-      displayedImagetData: [],
+      displayedImageData: [],
       imageRange: [0,1],
     };
     this.showDateTimePicker = this.showDateTimePicker.bind(this)
@@ -142,7 +142,7 @@ class App extends Component {
     var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-7),ind);
     displayedWeightData = displayedWeightData.map((data,index) => { 
       console.log(data,index);
-      return { x:index, y:Math.round(data.Weight/1.5)};
+      return { x:index, y:Math.round(data.Weight/1.5), dateTime:data.dateTime};
     })
     console.log(1, displayedWeightData);
     const weightRange = this.getWeightRange(displayedWeightData)
@@ -161,7 +161,7 @@ class App extends Component {
     var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-7),ind);
     displayedImageData = displayedImageData.map((data,index) => { 
       console.log(data,index);
-      return { x:index, y:data.Count};
+      return { x:index, y:data.Count, dateTime:data.Date};
     })
     console.log(1, displayedImageData);
     const imageRange = this.getWeightRange(displayedImageData)
@@ -213,10 +213,10 @@ class App extends Component {
                     data={this.state.displayedWeightData}
                     padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
                     xDomain={{ min: 0, max: 6 }}
-                    yDomain={{ min: this.state.weightRange[0]-0.01, max: this.state.weightRange[1]+0.01 }}
+                    yDomain={{ min: Math.max(this.state.weightRange[0]-1,0), max: this.state.weightRange[1]+1 }}
                   >
                     <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
-                    <HorizontalAxis tickCount={5} />
+                    <HorizontalAxis tickCount={7} theme={{ labels: { formatter: (v) => this.state.displayedWeightData[v].dateTime.slice(0,10) } }}/>
                     <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
                     <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
                   </Chart>
@@ -234,7 +234,7 @@ class App extends Component {
                     yDomain={{ min: this.state.imageRange[0]-0.01, max: this.state.imageRange[1]+0.01 }}
                   >
                     <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
-                    <HorizontalAxis tickCount={5} />
+                    <HorizontalAxis tickCount={7} theme={{ labels: { formatter: (v) => this.state.displayedImageData[v].dateTime.slice(0,10) } }}/>
                     <Area theme={{ gradient: { from: { color: '#ffa502' }, to: { color: '#ffa502', opacity: 0.4 } }}} />
                     <Line theme={{ stroke: { color: '#ffa502', width: 5 }, scatter: { default: { width: 4, height: 4, rx: 2 }} }} />
                   </Chart>

@@ -231,7 +231,7 @@ class App extends Component {
                     data={this.state.displayedImageData}
                     padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
                     xDomain={{ min: 0, max: 6 }}
-                    yDomain={{ min: this.state.imageRange[0]-0.01, max: this.state.imageRange[1]+0.01 }}
+                    yDomain={{ min: Math.max(this.state.weightRange[0]-1,0), max: this.state.weightRange[1]+1 }}
                   >
                     <VerticalAxis tickCount={11} theme={{ labels: { formatter: (v) => v.toFixed(2) } }} />
                     <HorizontalAxis tickCount={7} theme={{ labels: { formatter: (v) => this.state.displayedImageData[v].dateTime.slice(0,10) } }}/>

@@ -35,7 +35,7 @@ class App extends React.Component {
   componentDidMount() {
     setTimeout(() => {
       this.checkAuth()
-    }, 500);
+    }, 250);
   }
 
   updateAuth = (currentView) => {

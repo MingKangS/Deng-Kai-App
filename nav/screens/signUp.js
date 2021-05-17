@@ -94,8 +94,6 @@ class SignIn extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-  },
   input: {
     backgroundColor: '#fcf3db',
     borderRadius: 30,

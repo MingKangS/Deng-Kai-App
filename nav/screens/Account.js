@@ -5,6 +5,7 @@ import React, {Component} from 'react';
 import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
+import { ActionButton } from './components/Index';
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -70,10 +71,10 @@ export default class Account extends Component {
         </Text>
         <View style={styles.button}>
           <View style={styles.button1}>
-          <Button onPress={() => {this.changeCred("email")}} title='Change email'>Change email</Button>
+          <ActionButton onPress={() => {this.changeCred("email")}} title='Change Email' />
           </View>
           <View style={styles.button1}>
-          <Button onPress={() => {this.changeCred("password")}} title='Change password'>Change password</Button>
+          <ActionButton onPress={() => {this.changeCred("password")}} title='Change Password' />
           </View>
         </View>
       </View>
@@ -88,22 +89,13 @@ const styles = StyleSheet.create({
   },
   button: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: 'center',
   },
   button1:{
-    alignItems: 'center', 
-    justifyContent: 'center',
-    margin: 10
-  },
-  user:{
-    margin: 10,
-    padding: 30,
-    backgroundColor: "#F7F7F7",
-    width: "80%",
-    alignSelf: "center",
-    flexDirection: "column",
-    borderRadius: 5,
+    marginTop: 10,
+    margin: 5,
+    width: 190,
   },
   title:{
     fontWeight: "bold",

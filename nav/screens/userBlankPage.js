@@ -4,6 +4,7 @@ import * as mutations from '../../graphql/mutations';
 import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
+import { ActionButton } from './components/Index';
 
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
@@ -61,13 +62,28 @@ class App extends Component {
 
   render() {
     return ( 
-      <View>
-        <Text>blank page</Text>
-        <Button onPress={() => this.deleteUser()} title='Delete User'/>
+      <View style={styles.container}>
+        <Text>blank page{"\n"}</Text>
+        <View style={styles.button}>
+          <ActionButton
+            title='Delete User'
+            onPress={this.deleteUser}
+        />
+        </View>
       </View>
       
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    margin: 10,
+  },
+  button: {
+    width: 180,
+    alignSelf: 'center',
+  }
+})
 
 export default App;

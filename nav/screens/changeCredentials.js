@@ -107,7 +107,7 @@ export default class ChangeCredentials extends Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
       
         { this.state.cred == 'password' && 
           <Input
@@ -126,13 +126,19 @@ export default class ChangeCredentials extends Component {
             this.state.cred == "confirmation code" ? (
               <>
               <Text>We have sent a confirmation code to your email</Text>
-              <Button onPress={() => this.confirmEmail()} title='Enter confirmation code'/>
+              <ActionButton onPress={() => this.confirmEmail()} title='Enter confirmation code'/>
               </>
             ) : (
-              <Button onPress={() => this.save()} title='Save'/>
+              <ActionButton onPress={() => this.save()} title='Save'/>
             )
           }
       </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    margin: 10,
+  },
+})

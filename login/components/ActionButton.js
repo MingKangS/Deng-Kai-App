@@ -9,7 +9,7 @@ const ActionButton = ({
   <TouchableHighlight
     onPress={onPress}
     style={styles.buttonContainer}
-    underlayColor='#c6e4ee'
+    underlayColor='#111e6c'
   >
     <View style={styles.button}>
       <Text style={styles.buttonText}>{title}</Text>

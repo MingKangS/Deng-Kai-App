@@ -6,7 +6,7 @@ import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify
 import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
 import * as queries from '../../graphql/queries';
- 
+
 Amplify.configure({
   url: awsconfig.aws_appsync_graphqlEndpoint,
   region: awsconfig.aws_appsync_region,
@@ -23,9 +23,15 @@ Amplify.configure({
 })
 
 class App extends Component {
-  state = {
-    users:[]
+  constructor(props){
+    super(props);
+    this.state = {
+      users:[],
+      lastRefresh: Date(Date.now()).toString(),
+    };
+    this.refreshScreen = this.refreshScreen.bind(this)
   }
+
 
   async componentDidMount() {
     
@@ -55,20 +61,33 @@ class App extends Component {
     this.props.navigation.navigate("Create_users")
   }
   
+  refreshScreen() {
+    this.setState({ lastRefresh: Date(Date.now()).toString() });
+  }
 
   render() {
     return ( 
       <View>
         <View style={styles.container}>
           <StatusBar style="auto" />
-          <TouchableOpacity onPress={() => {this.navigateCreateUser()}}>
-            <Image 
-              source={require ('../src/assets/plus.png')}
-              resizeMode='contain'
-              style={{width: 40, height: 40,}}
-            />
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
+            <TouchableOpacity onPress={() => {this.navigateCreateUser()}}>
+              <Image 
+                source={require ('../src/assets/plus.png')}
+                resizeMode='contain'
+                style={{width: 40, height: 40,}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.refreshScreen}>
+              <Image 
+                source={require ('../src/assets/refresh.png')}
+                resizeMode='contain'
+                style={{width: 50, height: 50,}}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
+        <Text style={{marginLeft: 20}}>Last Refresh: {this.state.lastRefresh}</Text>
         <FlatList style={{marginBottom: 60}}
           data={this.state.users}
           renderItem={({ item }) => (

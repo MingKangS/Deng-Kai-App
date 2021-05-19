@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableHighlight, StyleSheet } from 'react-native'
+import { View, Text, TouchableHighlight, StyleSheet, Alert } from 'react-native'
 
 import { Auth } from 'aws-amplify'
 
@@ -36,13 +36,17 @@ class SignIn extends Component {
         if (this.state.adminCode == "dengkaiadmin") {
           await this.signIn()
         }
-        
+        else{
+          Alert.alert("Sign In Error", "Invalid Admin Code")
+        }
       }
     } else if (!this.props.adminSignIn) {
       if (!adminList[this.state.username]) {
         await this.signIn()
       }
-      
+      else{
+        Alert.alert("Sign In Error", "Admin Code is not entered")
+      }
     }
     else {
       
@@ -59,6 +63,7 @@ class SignIn extends Component {
       this.props.updateAuth(this.props.adminSignIn ? "adminNav" : "userNav")
     } catch (err) {
       console.log('error signing in...', err)
+      Alert.alert("Sign In Error", "Invalid username or password")
     }
   }
   showForgotPassword = () => {

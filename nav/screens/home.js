@@ -129,7 +129,7 @@ class App extends Component {
       console.log('error: ', err);
     }
 
-    this.setState({ date: "2021-04-08" });
+    //this.setState({ date: "2021-04-08" });
     var ind = false;
     var displayedWeightData = this.state.weightDataList;
     for (var i = 0; i < displayedWeightData.length; i++) {
@@ -139,6 +139,10 @@ class App extends Component {
         break;
       }
     }
+    if (!ind) {
+      ind = this.state.weightDataList.length - 1
+    }
+
     var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-5),ind);
     displayedWeightData = displayedWeightData.map((data,index) => { 
       console.log(data,index);
@@ -158,6 +162,7 @@ class App extends Component {
         break;
       }
     }
+    ind = this.state.imageDataList.length - 1
     var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-5),ind);
     displayedImageData = displayedImageData.map((data,index) => { 
       console.log(data,index);

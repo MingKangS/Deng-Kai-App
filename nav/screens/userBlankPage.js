@@ -46,18 +46,24 @@ class App extends Component {
     });
     const cognito = new AWS.CognitoIdentityServiceProvider();
 
-    await cognito.adminDeleteUser({
-      UserPoolId: 'ap-southeast-1_ZGZS4IHrW',
-      Username: this.state.username,
-    }).promise();
-
     try {
-      const user = {Username: this.state.username}
-      const deleteUser = await API.graphql({ query: mutations.deleteUserCS, variables: {input: user}});  
-      console.log(deleteUser)
+      await cognito.adminDeleteUser({
+        UserPoolId: 'ap-southeast-1_ZGZS4IHrW',
+        Username: this.state.username,
+      }).promise();
+
+      try {
+        const user = {Username: this.state.username}
+        const deleteUser = await API.graphql({ query: mutations.deleteUserCS, variables: {input: user}});  
+        console.log(deleteUser)
+      } catch (err) {
+        console.log('error: ', err);
+      }
     } catch (err) {
       console.log('error: ', err);
     }
+
+    
   }
 
   render() {

@@ -27,7 +27,6 @@ class App extends Component {
     super(props);
     this.state = {
       users:[],
-      lastRefresh: Date(Date.now()).toString(),
     };
     this.refreshScreen = this.refreshScreen.bind(this)
   }
@@ -62,7 +61,7 @@ class App extends Component {
   }
   
   refreshScreen() {
-    this.setState({ lastRefresh: Date(Date.now()).toString() });
+    this.componentDidMount()
   }
 
   render() {
@@ -87,7 +86,6 @@ class App extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={{marginLeft: 20}}>Last Refresh: {this.state.lastRefresh}</Text>
         <FlatList style={{marginBottom: 60}}
           data={this.state.users}
           renderItem={({ item }) => (

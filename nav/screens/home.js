@@ -61,6 +61,9 @@ class App extends Component {
   handleDatePicked = date => {
     console.log("A date has been picked: ", date);
     this.hideDateTimePicker();
+    const d = this.convertDateFormat(date)
+    console.log(d);
+    this.setState({ date: d }, () => this.setChartData())
   };
 
   refreshScreen() {
@@ -157,6 +160,55 @@ class App extends Component {
     var displayedImageData = this.state.imageDataList;
     for (var i = 0; i < displayedImageData.length; i++) {
       //console.log(displayedImageData[i].Date.slice(0,10), this.state.date, displayedWeightData[i].dateTime.slice(0,10) == this.state.date);
+      if (displayedImageData[i].Date.slice(0,10) == "04/15/2021") {
+        ind = i+1;
+        break;
+      }
+    }
+    if (!ind) {
+      ind = this.state.imageDataList.length - 1
+    }
+    
+    var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-5),ind);
+    displayedImageData = displayedImageData.map((data,index) => { 
+      console.log(data,index);
+      return { x:index, y:data.Count, dateTime:data.Date};
+    })
+    console.log(1, displayedImageData);
+    const imageRange = this.getWeightRange(displayedImageData)
+    console.log(imageRange)
+    this.setState({ displayedImageData: displayedImageData, loadingData: false, imageRange: imageRange});
+  }
+
+  setChartData() {
+    console.log(this.state.date);
+    var ind = false;
+    var displayedWeightData = this.state.weightDataList;
+    for (var i = 0; i < displayedWeightData.length; i++) {
+      console.log(displayedWeightData[i].dateTime.slice(0,10), this.state.date, displayedWeightData[i].dateTime.slice(0,10) == this.state.date);
+      if (displayedWeightData[i].dateTime.slice(0,10) == this.state.date) {
+        ind = i+1;
+        break;
+      }
+    }
+    if (!ind) {
+      ind = this.state.weightDataList.length - 1
+    }
+
+    var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-5),ind);
+    displayedWeightData = displayedWeightData.map((data,index) => { 
+      console.log(data,index);
+      return { x:index, y:Math.round(data.Weight/1.5), dateTime:data.dateTime};
+    })
+    console.log(1, displayedWeightData);
+    const weightRange = this.getWeightRange(displayedWeightData)
+    console.log(weightRange)
+    this.setState({ displayedWeightData: displayedWeightData, weightRange: weightRange});
+
+    ind = false;
+    var displayedImageData = this.state.imageDataList;
+    for (var i = 0; i < displayedImageData.length; i++) {
+      //console.log(displayedImageData[i].Date, this.state.date, displayedImageData[i].Date == this.state.date);
       if (displayedImageData[i].Date.slice(0,10) == "04/15/2021") {
         ind = i+1;
         break;

@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput, FlatList, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, FlatList, TouchableOpacity, Image, Alert } from 'react-native';
 import { Auth } from 'aws-amplify';
 import React, {Component} from 'react';
 import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
@@ -53,6 +53,7 @@ export default class ChangeCredentials extends Component {
       console.log(result)
     } catch (err) {
       console.log(err)
+      Alert.alert("Error", "Invalid Confirmation Code")
     }
     console.log(this.props.navigation.state.params)
     this.props.navigation.state.params.refresh
@@ -87,6 +88,7 @@ export default class ChangeCredentials extends Component {
         })
         .then(data => console.log(data))
         .catch(err => console.log(err));
+        Alert.alert("Error", "Invalid Old Password")
       this.props.navigation.state.params.refresh
       this.props.navigation.pop()
     }

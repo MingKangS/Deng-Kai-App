@@ -47,7 +47,7 @@ class App extends Component {
     this.hideDateTimePicker = this.hideDateTimePicker.bind(this)
     this.handleDatePicked = this.handleDatePicked.bind(this)
     this.refreshScreen = this.refreshScreen.bind(this)
-    this.getWeightRange = this.getWeightRange.bind(this)
+    this.getDataRange = this.getDataRange.bind(this)
   }
  
   showDateTimePicker = () => {
@@ -62,7 +62,6 @@ class App extends Component {
     console.log("A date has been picked: ", date);
     this.hideDateTimePicker();
     const d = this.convertDateFormat(date)
-    console.log(d);
     this.setState({ date: d }, () => this.setChartData())
   };
 
@@ -72,14 +71,14 @@ class App extends Component {
     this.componentDidMount()
   }
 
+  // Converts a Date data type to a string of "YYYY-MM-DD" format
   convertDateFormat(date) {
     const month = (date.getMonth()+1).toString() > 9 ? (date.getMonth()+1).toString() : "0" + (date.getMonth()+1).toString();
     const day = date.getDate().toString() > 9 ? date.getDate().toString() : "0" + date.getDate().toString();
     return date.getFullYear().toString() + "-" + month + "-" + day;
   }
 
-  getWeightRange(data) {
-    //const data = this.state.displayedWeightData
+  getDataRange(data) {
     var min = Infinity
     var max = -Infinity
     console.log(data)
@@ -97,118 +96,79 @@ class App extends Component {
  
 
   async componentDidMount() {
+    // Sets the date to be the date today by default
     var d = new Date();
     const dateToday = this.convertDateFormat(d);
     this.setState({ date: dateToday });
 
     let user = await AmplifyAuth.currentAuthenticatedUser();
     console.log(user);
+
+    // Get data from API
     try {
+      // Get weight data from API, then sort it by state then keep it in state
       const weightData = await API.graphql({ 
         query: queries.listWeights,
         authMode: 'API_KEY',
       });
-      
       const weightDataList = weightData.data.listWeightData.items;
-      
       weightDataList.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0));
-      console.log(weightDataList);
       this.setState({ weightDataList: weightDataList });
+      console.log("Weight data sorted by date: ", weightDataList)
 
+      // Same thing for image data
       const imageData = await API.graphql({ 
         query: queries.listImageProcess,
         authMode: 'API_KEY',
       });
-      console.log("____________________",imageData)
       
       const imageDataList = imageData.data.listImageProcess.items;
-      
       imageDataList.sort((a,b) => (a.Date > b.Date) ? 1 : ((b.Date > a.Date) ? -1 : 0));
-      console.log(imageDataList);
       this.setState({ imageDataList: imageDataList });
-      
+      console.log("Image data sorted by date: ", imageDataList)
       
     } catch (err) {
-      console.log('error: ', err);
+      console.log('Error: ', err);
+      return
     }
 
     //this.setState({ date: "2021-04-08" });
-    var ind = false;
-    var displayedWeightData = this.state.weightDataList;
-    for (var i = 0; i < displayedWeightData.length; i++) {
-      console.log(displayedWeightData[i].dateTime.slice(0,10), this.state.date, displayedWeightData[i].dateTime.slice(0,10) == this.state.date);
-      if (displayedWeightData[i].dateTime.slice(0,10) == this.state.date) {
-        ind = i+1;
-        break;
-      }
-    }
-    if (!ind) {
-      ind = this.state.weightDataList.length - 1
-    }
 
-    var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-5),ind);
-    displayedWeightData = displayedWeightData.map((data,index) => { 
-      console.log(data,index);
-      return { x:index, y:Math.round(data.Weight/1.5), dateTime:data.dateTime};
-    })
-    console.log(1, displayedWeightData);
-    const weightRange = this.getWeightRange(displayedWeightData)
-    console.log(weightRange)
-    this.setState({ displayedWeightData: displayedWeightData, weightRange: weightRange});
-
-    ind = false;
-    var displayedImageData = this.state.imageDataList;
-    for (var i = 0; i < displayedImageData.length; i++) {
-      //console.log(displayedImageData[i].Date.slice(0,10), this.state.date, displayedWeightData[i].dateTime.slice(0,10) == this.state.date);
-      if (displayedImageData[i].Date.slice(0,10) == "04/15/2021") {
-        ind = i+1;
-        break;
-      }
-    }
-    if (!ind) {
-      ind = this.state.imageDataList.length - 1
-    }
-    
-    var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-5),ind);
-    displayedImageData = displayedImageData.map((data,index) => { 
-      console.log(data,index);
-      return { x:index, y:data.Count, dateTime:data.Date};
-    })
-    console.log(1, displayedImageData);
-    const imageRange = this.getWeightRange(displayedImageData)
-    console.log(imageRange)
-    this.setState({ displayedImageData: displayedImageData, loadingData: false, imageRange: imageRange});
+    this.setChartData()
   }
 
   setChartData() {
-    console.log(this.state.date);
+    // Check which data has the same date as this.state.date, then slice the data list so it only contains the data for the past 5 days
     var ind = false;
     var displayedWeightData = this.state.weightDataList;
     for (var i = 0; i < displayedWeightData.length; i++) {
-      console.log(displayedWeightData[i].dateTime.slice(0,10), this.state.date, displayedWeightData[i].dateTime.slice(0,10) == this.state.date);
       if (displayedWeightData[i].dateTime.slice(0,10) == this.state.date) {
         ind = i+1;
         break;
       }
     }
+    // If there is no data that has same date as this.state.date, then set the most recent five days to be displayed by default
     if (!ind) {
       ind = this.state.weightDataList.length - 1
     }
-
+    // Slice the data
     var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-5),ind);
+
+    // Map all the point coordinates fo the data to be displayed on the chart
     displayedWeightData = displayedWeightData.map((data,index) => { 
-      console.log(data,index);
       return { x:index, y:Math.round(data.Weight/1.5), dateTime:data.dateTime};
     })
-    console.log(1, displayedWeightData);
-    const weightRange = this.getWeightRange(displayedWeightData)
-    console.log(weightRange)
-    this.setState({ displayedWeightData: displayedWeightData, weightRange: weightRange});
+    console.log("Displayed weight data points", displayedWeightData);
 
+    // Get the range of the highest and lowest weights
+    const weightRange = this.getDataRange(displayedWeightData)
+    this.setState({ displayedWeightData: displayedWeightData, weightRange: weightRange});
+    console.log("Range of weight data: ", weightRange)
+
+    // Do the same exact thing for image
     ind = false;
     var displayedImageData = this.state.imageDataList;
     for (var i = 0; i < displayedImageData.length; i++) {
-      //console.log(displayedImageData[i].Date, this.state.date, displayedImageData[i].Date == this.state.date);
       if (displayedImageData[i].Date.slice(0,10) == "04/15/2021") {
         ind = i+1;
         break;
@@ -221,7 +181,7 @@ class App extends Component {
       return { x:index, y:data.Count, dateTime:data.Date};
     })
     console.log(1, displayedImageData);
-    const imageRange = this.getWeightRange(displayedImageData)
+    const imageRange = this.getDataRange(displayedImageData)
     console.log(imageRange)
     this.setState({ displayedImageData: displayedImageData, loadingData: false, imageRange: imageRange});
   }

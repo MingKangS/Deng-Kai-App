@@ -51,19 +51,19 @@ class App extends Component {
         UserPoolId: 'ap-southeast-1_ZGZS4IHrW',
         Username: this.state.username,
       }).promise();
+      
+    } catch (err) {
+      console.log('error: ', err);
+    }
 
-      try {
+    try {
         const user = {Username: this.state.username}
         const deleteUser = await API.graphql({ query: mutations.deleteUserCS, variables: {input: user}});  
         console.log(deleteUser)
       } catch (err) {
         console.log('error: ', err);
       }
-    } catch (err) {
-      console.log('error: ', err);
-    }
-
-    
+      this.props.navigation.pop()
   }
 
   render() {

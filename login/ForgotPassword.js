@@ -13,9 +13,11 @@ class ForgotPassword extends React.Component {
     password: '',
     authorizationCode: ''
   }
+
   onChangeText = (key, value) => {
     this.setState({ [key]: value })
   }
+
   resetPassword = () => {
     Auth.forgotPassword(this.state.username)
       .then(() => {
@@ -23,6 +25,7 @@ class ForgotPassword extends React.Component {
       })
       .catch(err => console.log('error: ', err))
   }
+
   confirmResetPassword = () => {
     const { username, password, authorizationCode } = this.state
     Auth.forgotPasswordSubmit(username, authorizationCode, password)
@@ -32,6 +35,7 @@ class ForgotPassword extends React.Component {
       })
       .catch(err => console.log('error resetting password:', err))
   }
+  
   render() {
     const { stage } = this.state
     return (

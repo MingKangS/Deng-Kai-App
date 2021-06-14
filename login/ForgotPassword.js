@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  View, Text, StyleSheet, Image, Dimensions
+  View, Text, StyleSheet, Image, Dimensions, Alert
 } from 'react-native'
 import { Input, ActionButton } from './components/Index'
 import { Auth } from 'aws-amplify'
@@ -24,6 +24,7 @@ class ForgotPassword extends React.Component {
         this.setState({ stage: 1 })
       })
       .catch(err => console.log('error: ', err))
+      Alert.alert("Error", "Invalid Username")
   }
 
   confirmResetPassword = () => {

@@ -25,7 +25,7 @@ const RootDrawerNavigator = createDrawerNavigator({
     <View style={{flex:1}}>
       <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
         <DrawerNavigatorItems {...props} />
-        <Button title="Logout" onPress={async () =>{ 
+        <Button title="Logout" color='#000080' onPress={async () =>{ 
           try {
             await Auth.signOut();
             props.screenProps.handler("auth")

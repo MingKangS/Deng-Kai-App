@@ -73,7 +73,7 @@ export default class Account extends Component {
           <View style={styles.button1}>
           <ActionButton onPress={() => {this.changeCred("email")}} title='Change Email' />
           </View>
-          <View style={styles.button1}>
+          <View style={styles.button2}>
           <ActionButton onPress={() => {this.changeCred("password")}} title='Change Password' />
           </View>
         </View>
@@ -95,7 +95,12 @@ const styles = StyleSheet.create({
   button1:{
     marginTop: 10,
     margin: 5,
-    width: 190,
+    width: 150,
+  },
+  button2:{
+    marginTop: 10,
+    margin: 5,
+    width: 180,
   },
   title:{
     fontWeight: "bold",

@@ -39,7 +39,11 @@ class SignIn extends Component {
         else{
           Alert.alert("Sign In Error", "Invalid Admin Code")
         }
+      } else {
+        console.log("Error: Normal users cannot sign in with admin code")
+        Alert.alert("Sign In Error", "Normal users cannot sign in with admin code")
       }
+      
     } else if (!this.props.adminSignIn) {
       if (!adminList[this.state.username]) {
         await this.signIn()
@@ -54,7 +58,6 @@ class SignIn extends Component {
   }
 
   async signIn() {
-    
     const { username, password } = this.state
     console.log(username,password)
     try {
@@ -66,6 +69,7 @@ class SignIn extends Component {
       Alert.alert("Sign In Error", "Invalid username or password")
     }
   }
+
   showForgotPassword = () => {
     this.props.toggleAuthType('showForgotPassword')
   }

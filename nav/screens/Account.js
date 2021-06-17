@@ -32,37 +32,48 @@ export default class Account extends Component {
       username: '',
       email: '',
       password: '',
+      emailIsVerified: false,
     };
     this.componentDidMount = this.componentDidMount.bind(this)
     this.changeCred = this.changeCred.bind(this)
+    this.refreshScreen = this.refreshScreen.bind(this)
   }
 
   async componentDidMount() {
     const user = await AmplifyAuth.currentAuthenticatedUser()
     console.log(user)
     this.setState({ username: user.username, email: user.attributes.email, password: user.password})
+    if (user.attributes.email_verified) {
+      this.setState({ emailIsVerified: true})
+    }
   }
 
   changeCred(cred) {
     this.props.navigation.navigate("Change_Credentials", {cred: cred, refresh: async () => await this.componentDidMount})
   }
 
-  /*async signOut() {
-    console.log("test acc",this,this.props)
-    this.props.screenProps("auth")
-    try {
-        await Auth.signOut();
-    } catch (error) {
-        console.log('error signing out: ', error);
-    }
-    this.setState({dummy: 1})
-  } */
+  updateEmail(newEmail) {
+    this.setState({email: newEmail});
+  }
+
+  refreshScreen() {
+    this.componentDidMount();
+  }
 
   render() {
     return (
       <View style={styles.container}>
+        <View style={{flexDirection: 'row-reverse', alignItems: 'center'}}>
+          <TouchableOpacity onPress={this.refreshScreen}>
+            <Image 
+              source={require ('../src/assets/refresh.png')}
+              resizeMode='contain'
+              style={{width: 50, height: 50,}}
+            />
+          </TouchableOpacity>
+        </View>
         <Text>
-          <Text style={styles.title}>Email: </Text>
+          <Text style={styles.title}>Email: </Text><Text>{this.state.emailIsVerified.toString()}</Text>
           <Text style={styles.content}>{this.state.email}</Text>
         </Text>
         <Text>

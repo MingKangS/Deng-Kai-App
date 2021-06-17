@@ -87,8 +87,11 @@ export default class ChangeCredentials extends Component {
           return Auth.changePassword(user, old_password, input);
         })
         .then(data => console.log(data))
-        .catch(err => console.log(err));
-        Alert.alert("Error", "Invalid Old Password")
+        .catch(err => {
+          console.log(err)
+          Alert.alert("Error", "Invalid Old Password")
+        });
+        
       this.props.navigation.state.params.refresh
       this.props.navigation.pop()
     }

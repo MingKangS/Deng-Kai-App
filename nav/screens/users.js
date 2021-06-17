@@ -7,21 +7,6 @@ import AWSAppSyncClient, { AUTH_TYPE } from 'aws-appsync';
 import awsconfig from '../../aws-exports';
 import * as queries from '../../graphql/queries';
 
-Amplify.configure({
-  url: awsconfig.aws_appsync_graphqlEndpoint,
-  region: awsconfig.aws_appsync_region,
-  Auth: {
-    type: AUTH_TYPE.API_KEY,
-    apiKey: awsconfig.aws_appsync_apiKey,
-  },
-  API:{
-    "aws_appsync_graphqlEndpoint": awsconfig.aws_appsync_graphqlEndpoint,
-    "aws_appsync_region": awsconfig.aws_appsync_region,
-    "aws_appsync_authenticationType": AUTH_TYPE.API_KEY,
-    "aws_appsync_apiKey": awsconfig.aws_appsync_apiKey,
-  }
-})
-
 class App extends Component {
   constructor(props){
     super(props);
@@ -39,14 +24,9 @@ class App extends Component {
         query: queries.listUsers,
         authMode: 'API_KEY',
       });
-      // console.log('Scales:',test,typeof test, typeof test.data, typeof test.data.listMkTables.items);
-      // const test = await API.graphql(graphqlOperation(ListScales));
-      // console.log('Scales: ', test);
       console.log(usersList,)
       console.log(usersList.data.listUserCS.items)
       const users = usersList.data.listUserCS.items
-      //t.sort((a,b) => (a.dateTime > b.dateTime) ? 1 : ((b.dateTime > a.dateTime) ? -1 : 0))
-      //this.setState({ test: t, loadingData: false });
       this.setState({ users: users });
     } catch (err) {
       console.log('error: ', err);

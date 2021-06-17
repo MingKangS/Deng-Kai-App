@@ -23,8 +23,11 @@ class ForgotPassword extends React.Component {
       .then(() => {
         this.setState({ stage: 1 })
       })
-      .catch(err => console.log('error: ', err))
-      Alert.alert("Error", "Invalid Username")
+      .catch(err => {
+        console.log('error: ', err)
+        Alert.alert("Error", "Invalid Username")
+      })
+      
   }
 
   confirmResetPassword = () => {

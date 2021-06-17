@@ -142,6 +142,7 @@ class App extends Component {
     var ind = false;
     var displayedWeightData = this.state.weightDataList;
     for (var i = 0; i < displayedWeightData.length; i++) {
+      console.log(displayedWeightData[i].dateTime.slice(0,10), this.state.date)
       if (displayedWeightData[i].dateTime.slice(0,10) == this.state.date) {
         ind = i+1;
         break;
@@ -169,12 +170,15 @@ class App extends Component {
     ind = false;
     var displayedImageData = this.state.imageDataList;
     for (var i = 0; i < displayedImageData.length; i++) {
-      if (displayedImageData[i].Date.slice(0,10) == "04/15/2021") {
+      console.log(displayedImageData[i].Date.slice(0,10), this.state.date)
+      if (displayedImageData[i].Date.slice(0,10) == this.state.date) {
         ind = i+1;
         break;
       }
     }
-    ind = this.state.imageDataList.length - 1
+    if (!ind) {
+      ind = this.state.weightDataList.length - 1
+    }
     var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-5),ind);
     displayedImageData = displayedImageData.map((data,index) => { 
       console.log(data,index);

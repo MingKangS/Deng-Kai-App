@@ -1,5 +1,5 @@
 import React, { Fragment, Component } from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Alert } from 'react-native'
 import Amplify, { API, graphqlOperation, Auth as AmplifyAuth } from 'aws-amplify';
 import { Input, ActionButton } from './components/Index'
 import { Auth } from 'aws-amplify'
@@ -31,9 +31,11 @@ class SignIn extends Component {
     authCode: '',
     stage: 0
   }
+
   onChangeText = (key, value) => {
     this.setState({ [key]: value })
   }
+
   signUp = async () => {
     const {
       username, password, email
@@ -43,7 +45,9 @@ class SignIn extends Component {
       console.log('successful sign up..')
       this.setState({ stage: 1 })
     } catch (err) {
-      console.log('error signing up...', err)
+      console.log('error signing up...', err);
+      Alert.alert("Error", err.message);
+      return
     }
     try {
       const newUser = {
@@ -82,6 +86,7 @@ class SignIn extends Component {
     }
     console.log("Account created!")
   }
+
   render() {
     return (
       <View>
@@ -113,7 +118,7 @@ class SignIn extends Component {
                 onChangeText={this.onChangeText}
               /> */}
               <ActionButton
-                title='Sign Up'
+                title='Create user'
                 onPress={this.signUp}
               />
             </Fragment>

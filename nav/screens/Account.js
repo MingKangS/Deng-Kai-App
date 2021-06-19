@@ -73,8 +73,21 @@ export default class Account extends Component {
           </TouchableOpacity>
         </View>
         <Text>
-          <Text style={styles.title}>Email: </Text><Text>{this.state.emailIsVerified.toString()}</Text>
-          <Text style={styles.content}>{this.state.email}</Text>
+          <Text style={styles.title}>Email: </Text>
+          <Text style={styles.content}>{this.state.email} </Text>      
+          {this.state.emailIsVerified ? (
+            <Image 
+              source={require ('../src/assets/greentick.png')}
+              resizeMode='contain'
+              style={{width: 20, height: 20}}
+            />
+          ) : ( 
+            <Image 
+              source={require ('../src/assets/greytick.png')}
+              resizeMode='contain'
+              style={{width: 20, height: 20}}
+            />
+          )}
         </Text>
         <Text>
           <Text style={styles.title}>Username: </Text>

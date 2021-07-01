@@ -150,7 +150,7 @@ class App extends Component {
     }
     // If there is no data that has same date as this.state.date, then set the most recent five days to be displayed by default
     if (!ind) {
-      ind = this.state.weightDataList.length - 1
+      ind = this.state.weightDataList.length;
     }
     // Slice the data
     var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-5),ind);
@@ -177,7 +177,7 @@ class App extends Component {
       }
     }
     if (!ind) {
-      ind = this.state.weightDataList.length - 1
+      ind = this.state.weightDataList.length;
     }
     var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-5),ind);
     displayedImageData = displayedImageData.map((data,index) => { 
@@ -232,7 +232,7 @@ class App extends Component {
                   <Chart
                     style={{ height: 200, width: 300 }}
                     data={this.state.displayedWeightData}
-                    padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                    padding={{ left: 40, bottom: 20, right: 40, top: 20 }}
                     xDomain={{ min: 0, max: 4 }}
                     yDomain={{ min: Math.max(this.state.weightRange[0]-1,0), max: this.state.weightRange[1]+1 }}
                   >
@@ -250,7 +250,7 @@ class App extends Component {
                   <Chart
                     style={{ height: 200, width: 300 }}
                     data={this.state.displayedImageData}
-                    padding={{ left: 40, bottom: 20, right: 20, top: 20 }}
+                    padding={{ left: 40, bottom: 20, right: 40, top: 20 }}
                     xDomain={{ min: 0, max: 4 }}
                     yDomain={{ min: Math.max(this.state.imageRange[0]-1,0), max: this.state.imageRange[1]+1 }}
                   >

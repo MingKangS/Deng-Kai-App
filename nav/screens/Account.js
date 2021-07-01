@@ -82,11 +82,7 @@ export default class Account extends Component {
               style={{width: 20, height: 20}}
             />
           ) : ( 
-            <Image 
-              source={require ('../src/assets/greytick.png')}
-              resizeMode='contain'
-              style={{width: 20, height: 20}}
-            />
+            null
           )}
         </Text>
         <Text>

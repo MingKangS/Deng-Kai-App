@@ -71,6 +71,7 @@ class SignIn extends Component {
       this.setState({ stage: 0 })
     } catch (err) {
       console.log('error signing up...', err)
+      Alert.alert("Error", "Incorrect confirmation code");
       return
     }
     try {

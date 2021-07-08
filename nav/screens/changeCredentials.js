@@ -89,7 +89,7 @@ export default class ChangeCredentials extends Component {
         .then(data => console.log(data))
         .catch(err => {
           console.log(err)
-          Alert.alert("Error", "Invalid Old Password")
+          Alert.alert("Error", "Invalid input. Please check if your old password is correct and your new password must have more than 6 characters.")
         });
         
       this.props.navigation.state.params.refresh

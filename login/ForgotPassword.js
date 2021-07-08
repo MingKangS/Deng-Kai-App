@@ -37,7 +37,10 @@ class ForgotPassword extends React.Component {
         alert('successfully changed password!')
         this.props.toggleAuthType('adminSignIn')
       })
-      .catch(err => console.log('error resetting password:', err))
+      .catch(err => {
+        console.log('error resetting password:', err)
+        Alert.alert("Error", "Invalid new")
+      })
   }
   
   render() {

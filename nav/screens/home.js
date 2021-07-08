@@ -138,9 +138,18 @@ class App extends Component {
   }
 
   setChartData() {
+    // Add up data from the same date
+    var displayedWeightData = [...this.state.weightDataList];
+    for (var i = 0; i < displayedWeightData.length-1; i++) {
+      while (i < displayedWeightData.length-1 && displayedWeightData[i].dateTime.slice(0,10) == displayedWeightData[i+1].dateTime.slice(0,10)) {
+        displayedWeightData[i+1].Weight += displayedWeightData[i].Weight
+        displayedWeightData.splice(i, 1);
+      }
+    }
+    console.log("Weight data summed up to date: ", displayedWeightData)
+
     // Check which data has the same date as this.state.date, then slice the data list so it only contains the data for the past 5 days
     var ind = false;
-    var displayedWeightData = this.state.weightDataList;
     for (var i = 0; i < displayedWeightData.length; i++) {
       console.log(displayedWeightData[i].dateTime.slice(0,10), this.state.date)
       if (displayedWeightData[i].dateTime.slice(0,10) == this.state.date) {
@@ -150,14 +159,14 @@ class App extends Component {
     }
     // If there is no data that has same date as this.state.date, then set the most recent five days to be displayed by default
     if (!ind) {
-      ind = this.state.weightDataList.length;
+      ind = displayedWeightData.length-1;
     }
     // Slice the data
-    var displayedWeightData = this.state.weightDataList.slice(Math.max(0,ind-5),ind);
+    var displayedWeightData = displayedWeightData.slice(Math.max(0,ind-5),ind);
 
     // Map all the point coordinates fo the data to be displayed on the chart
     displayedWeightData = displayedWeightData.map((data,index) => { 
-      return { x:index, y:Math.round(data.Weight/1.5), dateTime:data.dateTime};
+      return { x:index, y:Math.round(data.Weight/0.168), dateTime:data.dateTime};
     })
     console.log("Displayed weight data points", displayedWeightData);
 
@@ -167,8 +176,16 @@ class App extends Component {
     console.log("Range of weight data: ", weightRange)
 
     // Do the same exact thing for image
+    var displayedImageData = [...this.state.imageDataList];
+    for (var i = 0; i < displayedImageData.length-1; i++) {
+      while (i < displayedImageData.length-1 && displayedImageData[i].Date.slice(0,10) == displayedImageData[i+1].Date.slice(0,10)) {
+        displayedImageData[i+1].Count += displayedImageData[i].Count
+        displayedImageData.splice(i, 1);
+      }
+    }
+    console.log("Image data summed up to date: ", displayedImageData)
+    
     ind = false;
-    var displayedImageData = this.state.imageDataList;
     for (var i = 0; i < displayedImageData.length; i++) {
       console.log(displayedImageData[i].Date.slice(0,10), this.state.date)
       if (displayedImageData[i].Date.slice(0,10) == this.state.date) {
@@ -177,9 +194,8 @@ class App extends Component {
       }
     }
     if (!ind) {
-      ind = this.state.weightDataList.length;
+      ind = displayedImageData.length-1;
     }
-    var displayedImageData = this.state.imageDataList.slice(Math.max(0,ind-5),ind);
     displayedImageData = displayedImageData.map((data,index) => { 
       console.log(data,index);
       return { x:index, y:data.Count, dateTime:data.Date};
